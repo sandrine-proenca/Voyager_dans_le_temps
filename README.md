@@ -55,4 +55,6 @@ $ nest g resource profiles
 
 $ nest g resource photographies
 
+$ nest g resource comments
+
 ```
