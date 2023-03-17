@@ -18,8 +18,8 @@ export class UsersService {
     return await User.findOneBy({email})
   };
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await User.find();
   }
 
   findOne(id: number) {

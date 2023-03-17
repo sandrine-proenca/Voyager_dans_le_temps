@@ -11,10 +11,10 @@ import { encodePassword } from 'src/auth/bcrypt';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post()
   @ApiTags('Sign Up')
   @ApiOperation({ summary: "Création d'un compte utilisateur" })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Post()
   async create(@Body() createUserDto: CreateUserDto) {
 
     if(createUserDto.password !== createUserDto.password_confirm){
@@ -37,8 +37,14 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @ApiOperation({ summary: `Récupération de tous les users`})
+  async findAll() {
+    const allUsers = await this.usersService.findAll()
+    return {
+      statusCode: 200,
+      message: `Récupération de tous les users réussie !`,
+      data: allUsers
+    };
   }
 
   @Get(':id')
