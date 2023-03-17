@@ -6,7 +6,14 @@ import { ApiResponse, ApiTags, ApiOperation, ApiProperty } from '@nestjs/swagger
 import { encodePassword } from 'src/auth/bcrypt';
 
 
-
+/**
+ * All controllers for the User table:
+ * * **create**         : Creating a user account.
+ * * **findAll**        : Retrieving all users.
+ * * **findOne**        : Retrieving a user by id.
+ * * **update**         : Editing a user.
+ * * **remove**         : Deleting a user account by his id.
+ */
 @ApiTags('USERS')
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
@@ -53,7 +60,7 @@ export class UsersController {
 
 
   @Get(':id')
-  @ApiOperation({ summary: `Get a user by id`})
+  @ApiOperation({ summary: `Retrieving a user by id`})
   async findOne(@Param('id') id: string) {
     const oneUser = await this.usersService.findOne(+id);
     if(!oneUser){
@@ -85,9 +92,23 @@ export class UsersController {
     }
   }
 
-
+  
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @ApiOperation({ summary: ` Deleting a user account by his id `})
+  @ApiResponse({ status: 200, description: `Account deleted` })
+  async remove(@Param('id') id: string) {
+    const userExist = await this.usersService.findOne(+id)
+    if(!userExist){
+      throw new BadRequestException(`User not found`)
+    }
+    const deleteUser = await userExist.remove()
+    if(!deleteUser){
+      throw new HttpException(`Erreur Server`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+    return {
+      statusCode: 201,
+      message: `The deletion of the user is saved`,
+      data: deleteUser
+    }
   }
 }
