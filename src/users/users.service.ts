@@ -15,23 +15,26 @@ export class UsersService
     return user;
   };
 
-  /* Get a user in the database by email */
+
+  /* Find a user in the database by his email */
   async findUserByEmail(email: string)
   {
     return await User.findOneBy({ email })
   };
 
-  /* Get all users in the database */
+
+  /* Find all users in the database */
   async findAll()
   {
     return await User.find();
   }
 
-  /* Get a user in the database by id */
+
+  /*  Find a user in the database by his id */
   async findOne(id: number)
   {
     const user = await User.findOneBy({ id })
-    
+
     if (user)
     {
       return user
@@ -40,10 +43,25 @@ export class UsersService
     return undefined
   }
 
-  update(id: number, updateUserDto: UpdateUserDto)
+
+  /*Modify a user in the database by his id */
+  async update(id: number, updateUserDto: UpdateUserDto)
   {
-    return `This action updates a #${id} user`;
+    const updateUser = await User.findOneBy({id})
+
+    updateUser.email = updateUserDto.email,
+    updateUser.password = updateUserDto.password,
+    updateUser.firstname = updateUserDto.firstname,
+    updateUser.lastname = updateUserDto.lastname,
+    updateUser.birthday = updateUserDto.birthday,
+    updateUser.phone = updateUserDto.phone,
+    updateUser.address = updateUserDto.address
+
+    await User.save(updateUser)
+
+    return updateUser
   }
+
 
   remove(id: number)
   {

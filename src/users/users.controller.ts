@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, HttpException, HttpStatus, BadRequestException, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiResponse, ApiTags, ApiOperation, ApiProperty } from '@nestjs/swagger';
 import { encodePassword } from 'src/auth/bcrypt';
+
+
 
 @ApiTags('USERS')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -11,9 +13,10 @@ import { encodePassword } from 'src/auth/bcrypt';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+
   @Post()
-  @ApiTags('Sign Up')
-  @ApiOperation({ summary: "Creating a user account" })
+  @ApiTags(`Sign Up`)
+  @ApiOperation({ summary: `Creating a user account` })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   async create(@Body() createUserDto: CreateUserDto) {
 
@@ -23,7 +26,7 @@ export class UsersController {
 
     const userExist = await this.usersService.findUserByEmail(createUserDto.email)
     if(userExist){
-      throw new HttpException("The email already exists !", HttpStatus.NOT_ACCEPTABLE);
+      throw new HttpException(`The email already exists !`, HttpStatus.NOT_ACCEPTABLE);
     }
 
     createUserDto.password = await encodePassword(createUserDto.password)
@@ -32,9 +35,10 @@ export class UsersController {
 
     return {
       statusCode: 201,
-      message: "Successful creation of a new account !",
+      message: `Successful creation of a new account !`,
       data: newAccount};
   }
+
 
   @Get()
   @ApiOperation({ summary: `Retrieving all users`})
@@ -46,6 +50,7 @@ export class UsersController {
       data: allUsers
     };
   }
+
 
   @Get(':id')
   @ApiOperation({ summary: `Get a user by id`})
@@ -61,10 +66,25 @@ export class UsersController {
     }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+
+  @Patch()
+  @ApiOperation({summary: `Editing a user`})
+  async update(@Body() updateUserDto: UpdateUserDto, @Request() req) {
+
+    const account = req.user.id
+    const updateAccount = await this.usersService.update(account,updateUserDto)
+
+    if(!updateAccount){
+      throw new HttpException(`Erreur Server`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    return {
+      statusCode: 201,
+      message: `Saved user changes`,
+      data: updateAccount
+    }
   }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {
