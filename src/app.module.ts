@@ -12,7 +12,7 @@ import { Commentary } from './comments/entities/comment.entity';
 import { Profile } from './profiles/entities/profile.entity';
 import { Photography } from './photographies/entities/photography.entity';
 import { DataSource } from 'typeorm';
-import { join } from 'path';
+/* import { join } from 'path'; */
 
 @Module({
   imports: [

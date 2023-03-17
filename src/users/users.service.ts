@@ -5,11 +5,18 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
+
+  /* Create a user in the database */
   async create(createUserDto: CreateUserDto) {
     const user = await User.create({ ...createUserDto}).save();
     delete user.password;
     return user;
-  }
+  };
+
+  /* Get a user in the database by email */
+  async findUserByEmail(email: string){
+    return await User.findOneBy({email})
+  };
 
   findAll() {
     return `This action returns all users`;
