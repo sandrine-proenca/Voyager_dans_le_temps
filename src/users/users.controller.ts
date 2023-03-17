@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -13,17 +13,17 @@ export class UsersController {
 
   @Post()
   @ApiTags('Sign Up')
-  @ApiOperation({ summary: "Création d'un compte utilisateur" })
+  @ApiOperation({ summary: "Creating a user account" })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   async create(@Body() createUserDto: CreateUserDto) {
 
     if(createUserDto.password !== createUserDto.password_confirm){
-      throw new ConflictException("les most de passe sont différents")
+      throw new ConflictException(`Passwords are not the same`)
     }
 
     const userExist = await this.usersService.findUserByEmail(createUserDto.email)
     if(userExist){
-      throw new HttpException("L'adresse mail existe déjà !", HttpStatus.NOT_ACCEPTABLE);
+      throw new HttpException("The email already exists !", HttpStatus.NOT_ACCEPTABLE);
     }
 
     createUserDto.password = await encodePassword(createUserDto.password)
@@ -32,24 +32,33 @@ export class UsersController {
 
     return {
       statusCode: 201,
-      message: "Création du nouveau compte réussie !",
+      message: "Successful creation of a new account !",
       data: newAccount};
   }
 
   @Get()
-  @ApiOperation({ summary: `Récupération de tous les users`})
+  @ApiOperation({ summary: `Retrieving all users`})
   async findAll() {
     const allUsers = await this.usersService.findAll()
     return {
       statusCode: 200,
-      message: `Récupération de tous les users réussie !`,
+      message: `Successful users recovery !`,
       data: allUsers
     };
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @ApiOperation({ summary: `Get a user by id`})
+  async findOne(@Param('id') id: string) {
+    const oneUser = await this.usersService.findOne(+id);
+    if(!oneUser){
+      throw new BadRequestException(`User not found`)
+    }
+    return {
+      statusCode: 200,
+      message: `Successful user ${id} recovery !`,
+      data: oneUser
+    }
   }
 
   @Patch(':id')
