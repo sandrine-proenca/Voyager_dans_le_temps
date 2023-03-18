@@ -4,6 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Profile } from "src/profiles/entities/profile.entity";
 import { Photography } from "src/photographies/entities/photography.entity";
 import { Commentary } from "src/comments/entities/comment.entity";
+import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
 
 /*User's table */
 @Entity('users')
@@ -25,9 +26,12 @@ export class User extends BaseEntity{
     password: string;
 
     @ApiProperty()
-    @Column(/* { type: 'enum', enum: UserRoleEnum, default: UserRoleEnum.USER } */)
-    /* @Exclude() */
-    role: string /* UserRoleEnum */;
+    @Column({ 
+        type: 'enum',
+        enum: UserRoleEnum,
+        default: UserRoleEnum.USER })
+    @Exclude()
+    role: UserRoleEnum;
 
     @ApiProperty()
     @Column({nullable: false})
