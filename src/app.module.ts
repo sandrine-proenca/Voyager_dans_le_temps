@@ -12,7 +12,6 @@ import { Commentary } from './comments/entities/comment.entity';
 import { Profile } from './profiles/entities/profile.entity';
 import { Photography } from './photographies/entities/photography.entity';
 import { DataSource } from 'typeorm';
-/* import { join } from 'path'; */
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -25,7 +24,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Profile,Photography, Commentary/* , join(__dirname, '*', '.entity.{ts,js}'), */],
+      entities: [User, Profile,Photography, Commentary],
       synchronize: true,
       logging: true,
     }),
@@ -38,3 +37,4 @@ import { AuthModule } from './auth/auth.module';
   providers: [AppService],
 })
 export class AppModule { constructor(private datasource: DataSource) {} }
+
