@@ -57,4 +57,8 @@ $ nest g resource photographies
 
 $ nest g resource comments
 
+$ nest g module auth
+
+$ nest g service auth
+
 ```

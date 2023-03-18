@@ -13,6 +13,7 @@ import { Profile } from './profiles/entities/profile.entity';
 import { Photography } from './photographies/entities/photography.entity';
 import { DataSource } from 'typeorm';
 /* import { join } from 'path'; */
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { DataSource } from 'typeorm';
     UsersModule,
     ProfilesModule,
     PhotographiesModule,
-    CommentsModule],
+    CommentsModule,
+    AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
