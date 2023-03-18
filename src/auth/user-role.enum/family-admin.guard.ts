@@ -9,9 +9,8 @@ export class FamilyAdminGuard implements CanActivate {
     constructor ( private readonly reflector: Reflector ){}
 
     canActivate ( context: ExecutionContext ): boolean {
-        const requiredRoles = [UserRoleEnum.FAMILY/* , UserRoleEnum.ADMIN */]
-        const user = context.switchToHttp().getRequest().user as User
-
-        return requiredRoles.includes(user.role)
+        const requiredRoles = [UserRoleEnum.FAMILY, UserRoleEnum.ADMIN]
+        const user = context.switchToHttp().getRequest().user as User;
+        return requiredRoles.includes(user.role);
     }
 }
