@@ -3,10 +3,15 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from "bcrypt";
 
+/**
+ * Task that recovers a user and verify the password.
+ */
 @Injectable()
 export class AuthService {
 
-    constructor ( private usersService: UsersService){}
+    constructor ( 
+        private usersService: UsersService,
+        private jwtService:JwtService){}
 
     async validateUser( email: string, password: string ): Promise <any> {
         const user = await this.usersService.findUserByEmail(email)
