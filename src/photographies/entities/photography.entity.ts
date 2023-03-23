@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('photographies')
-export class Photography {
+export class Photography extends BaseEntity {
 
     /*Photography's table*/
     @ApiProperty()

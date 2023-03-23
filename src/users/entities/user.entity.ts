@@ -1,7 +1,7 @@
 import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
-import { Profile } from "src/profiles/entities/profile.entity";
+import { Profiles } from "src/profiles/entities/profile.entity";
 import { Photography } from "src/photographies/entities/photography.entity";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
@@ -54,10 +54,10 @@ export class User extends BaseEntity{
 
     /* Relations with other tables */
 
-    @ApiProperty({type: () => Profile})
-    @OneToMany( () => Profile,
+    @ApiProperty({type: () => Profiles})
+    @OneToMany( () => Profiles,
     (profile) => profile.user, {eager: true})
-    profiles: Profile[]
+    profiles: Profiles[]
 
 
     @ApiProperty({type: () => Photography})
