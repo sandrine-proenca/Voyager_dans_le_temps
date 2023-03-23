@@ -45,6 +45,9 @@ $ npm install --save-dev @types/passport-jwt
 
 $ npm i --save class-validator class-transformer
 
+$ npm install --save @nestjs/serve-static
+
+
 ```
 ### Création des tables typeorm dans le Terminal 'bash':
 
