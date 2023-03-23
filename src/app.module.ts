@@ -7,10 +7,10 @@ import { UsersModule } from './users/users.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { PhotographiesModule } from './photographies/photographies.module';
 import { CommentsModule } from './comments/comments.module';
-import { User } from './users/entities/user.entity';
-import { Commentary } from './comments/entities/comment.entity';
-import { Profile } from './profiles/entities/profile.entity';
-import { Photography } from './photographies/entities/photography.entity';
+import { User as Users } from './users/entities/user.entity';
+import { Commentary as Commentaries } from './comments/entities/comment.entity';
+import { Profiles } from './profiles/entities/profile.entity';
+import { Photography as Photographies } from './photographies/entities/photography.entity';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
 
@@ -24,7 +24,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User, Profile,Photography, Commentary],
+      entities: [Users, Profiles,Photographies, Commentaries],
       synchronize: true,
       logging: true,
     }),

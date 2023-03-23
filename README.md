@@ -47,6 +47,8 @@ $ npm i --save class-validator class-transformer
 
 $ npm install --save @nestjs/serve-static
 
+$ npm install -g typescript
+
 
 ```
 ### Création des tables typeorm dans le Terminal 'bash':
