@@ -1,16 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, HttpStatus } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
-import { CreateProfileDto } from './dto/create-profile.dto';
+import { CreateProfilesDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UseGuards } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
+import { profile } from 'console';
+import { Profiles } from './entities/profile.entity';
+import { HttpException } from '@nestjs/common/exceptions';
 
+@ApiTags(`PROFILES`)
 @Controller('profiles')
+@UseGuards(JwtAuthGuard)
 export class ProfilesController {
-  constructor(private readonly profilesService: ProfilesService) {}
+  constructor(
+    private readonly profilesService: ProfilesService,
+    private readonly usersService: UsersService) {}
 
+  @ApiBody({type: CreateProfilesDto})
+  @ApiOperation({ summary: `Adding a profile to a user account.`})
   @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profilesService.create(createProfileDto);
+  // Creating the profile with error message.
+  async create(@Body() createProfileDto: CreateProfilesDto,@Request() req) {
+    if ( req.user.profile){
+      throw new HttpException(`Impossible you already have a profile.`, HttpStatus.FORBIDDEN)
+    }
+    const profileCreated = await this.profilesService.createProfile(req.user, createProfileDto)
+    return {
+      statusCode: 201,
+      message:`Profile created.`,
+      data: profileCreated
+    }
   }
+
 
   @Get()
   findAll() {
