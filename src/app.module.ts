@@ -16,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal: true}),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.DB_HOST,
@@ -26,7 +26,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       entities: [Users, Profiles,Photographies, Commentaries],
       synchronize: true,
-      logging: true,
+      logging: false,
     }),
     UsersModule,
     ProfilesModule,
