@@ -60,7 +60,6 @@ export class UsersService
     const updateUser = await User.findOneBy({id})
 
     updateUser.email = updateUserDto.email,
-    updateUser.password = updateUserDto.password,
     updateUser.firstname = updateUserDto.firstname,
     updateUser.lastname = updateUserDto.lastname,
     updateUser.birthday = updateUserDto.birthday,

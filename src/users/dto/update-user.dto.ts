@@ -13,11 +13,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    password: string;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
     firstname: string;
 
     @ApiProperty()
