@@ -78,10 +78,26 @@ export class ProfilesController {
 
   
   // Edit a profile by its id.
-  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
+  @ApiOperation({summary: `Editing a profile.`})
+  @Patch(':id')
+
+  async update(@Param('id') id: number, @Body() UpdateProfilesDto: UpdateProfilesDto){
+    const profileExist = await this.profilesService.findOneProfileById(id)
+    if (!profileExist){
+      throw new BadRequestException('The profile does not exist.')
+    }
+    const updatedProfile = await this.profilesService.updateProfileById(id, UpdateProfilesDto)
+    return {
+      statusCode: 200,
+      message: `The profile has been modified.`,
+      data: updatedProfile
+    }
+  }
+
+  // Edit a profile by its id.
   @ApiOperation({summary: `Editing a profile.`})
   @Patch()
-  async update(@Body() updateProfilesDto: UpdateProfilesDto, @Req() req) {
+  async updateProfile(@Body() updateProfilesDto: UpdateProfilesDto, @Req() req) {
 
     // condition to know if the presentation of the user exists.
     if ( req.user.profile === null ){

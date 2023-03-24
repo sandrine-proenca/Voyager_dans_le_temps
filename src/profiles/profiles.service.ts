@@ -38,23 +38,24 @@ export class ProfilesService {
 
 
   // Edit a profile by its id.
-  async updateProfileById(id: number, updateProfilesDto: UpdateProfileDto): Promise <Profiles> {
+  async updateProfileById(id: number, updateProfilesDto: UpdateProfileDto){
 
-    const profile = await Profiles.findOneBy({id})
+    const updatedprofile = await Profiles.update(id, updateProfilesDto)
 
-    profile.job = updateProfilesDto.job
-    profile.father = updateProfilesDto.father
-    profile.mother = updateProfilesDto.mother
-    profile.myself = updateProfilesDto.myself
-    profile.travel = updateProfilesDto.travel
-    profile.anecdote = updateProfilesDto.anecdote
-    
-    return await profile.save();
+    if (updatedprofile) {
+      return Profiles.findOneBy({id})
+    }
+    return undefined
   }
 
 
   // Delete a profile by its id.
-  removeProfileById(id: number) {
-    return `This action removes a #${id} profile`;
+  async removeProfileById(id: number) {
+    const deletedProfile = await Profiles.findOneBy({id})
+    deletedProfile.remove()
+    if ( deletedProfile ){
+      return deletedProfile
+    }
+    return undefined
   }
 }
