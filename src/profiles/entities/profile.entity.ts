@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { User } from "src/users/entities/user.entity";
+import { User as Users } from "src/users/entities/user.entity";
 import { BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity(('profiles'))
@@ -37,6 +37,6 @@ export class Profiles extends BaseEntity {
     /* Relations with other tables */
 
     @ApiProperty({ type: ()=> Profiles})
-    @OneToOne( ()=> User, (user) => user.profiles, { onDelete: 'CASCADE'})
-    user: User
+    @OneToOne( ()=> Users, (user) => user.profile, { onDelete: 'CASCADE'})
+    user: Users
 }

@@ -26,8 +26,8 @@ export class ProfilesService {
 
 
   // Find all profiles.
-  findAllProfiles() {
-    return `This action returns all profiles`;
+  async findAllProfiles() {
+    return await Profiles.find();
   }
 
 

@@ -55,15 +55,13 @@ export class User extends BaseEntity{
     /* Relations with other tables */
 
     @ApiProperty({type: () => Profiles})
-    @OneToOne( () => Profiles,
-    (profiles) => profiles.user, {eager: true})
+    @OneToOne( () => Profiles, (profile) => profile.user, {eager: true})
     @JoinColumn()
-    profiles: Profiles[]
+    profile: Profiles
 
 
     @ApiProperty({type: () => Photography})
-    @OneToMany(() => Photography,
-    (photography) =>photography.user, {eager: true})
+    @OneToMany(() => Photography, (photography) =>photography.user, {eager: true})
     photographies: Photography[]
 
     
