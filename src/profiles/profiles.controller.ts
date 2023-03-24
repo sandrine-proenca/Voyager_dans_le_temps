@@ -37,21 +37,21 @@ export class ProfilesController {
 
   @Get()
   findAll() {
-    return this.profilesService.findAll();
+    return this.profilesService.findAllProfiles();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.profilesService.findOne(+id);
+    return this.profilesService.findOneProfileById(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profilesService.update(+id, updateProfileDto);
+    return this.profilesService.updateProfileById(+id, updateProfileDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.profilesService.remove(+id);
+    return this.profilesService.removeProfileById(+id);
   }
 }

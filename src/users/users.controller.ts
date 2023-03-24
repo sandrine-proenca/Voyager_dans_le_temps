@@ -27,7 +27,7 @@ export class UsersController
   @ApiTags(`Sign Up`)
   @ApiOperation({ summary: `Creating a user account` })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Post()
+  @Post(`register`)
   async create(@Body() createUserDto: CreateUserDto)
   {
 
@@ -36,8 +36,8 @@ export class UsersController
       throw new ConflictException(`Passwords are not the same`)
     }
 
-    const userExist = await this.usersService.findUserByEmail(createUserDto.email)
-    if (userExist)
+    const ExistingUser = await this.usersService.findUserByEmail(createUserDto.email)
+    if (ExistingUser)
     {
       throw new HttpException(`The email already exists !`, HttpStatus.NOT_ACCEPTABLE);
     }
@@ -69,9 +69,9 @@ export class UsersController
 
   @ApiOperation({ summary: `Retrieving a user by id` })
   @Get(':id')
-  async findOne(@Param('id') id: string)
+  async findOne(@Param('id') id: number)
   {
-    const oneUser = await this.usersService.findOne(+id);
+    const oneUser = await this.usersService.findOne(id);
     if (!oneUser)
     {
       throw new BadRequestException(`User not found`)

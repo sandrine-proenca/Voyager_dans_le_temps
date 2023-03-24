@@ -18,7 +18,7 @@ export class AppController {
 
   @ApiTags (`User Profile`)
   @UseGuards(JwtAuthGuard)
-  @Get(`profile`)
+  @Get(`userprofile`)
   getProfile ( @Request() req ) {
     return req.user
   }

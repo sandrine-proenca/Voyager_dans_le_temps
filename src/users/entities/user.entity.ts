@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn } from "typeorm";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 import { Profiles } from "src/profiles/entities/profile.entity";
@@ -55,8 +55,9 @@ export class User extends BaseEntity{
     /* Relations with other tables */
 
     @ApiProperty({type: () => Profiles})
-    @OneToMany( () => Profiles,
-    (profile) => profile.user, {eager: true})
+    @OneToOne( () => Profiles,
+    (profiles) => profiles.user, {eager: true})
+    @JoinColumn()
     profiles: Profiles[]
 
 
