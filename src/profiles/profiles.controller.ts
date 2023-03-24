@@ -49,6 +49,7 @@ export class ProfilesController {
   }
 
   // Recovery of all profiles with error message.
+  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
   @ApiOperation({ summary: `Search for user profiles.`})
   @Get()
   async findAll() {
