@@ -1,16 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, HttpStatus, ClassSerializerInterceptor } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfilesDto } from './dto/create-profile.dto';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateProfileDto as UpdateProfilesDto } from './dto/update-profile.dto';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UseGuards, UseInterceptors } from '@nestjs/common/decorators';
+import { Req, UseGuards, UseInterceptors } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { profile } from 'console';
 import { Profiles } from './entities/profile.entity';
-import { HttpException } from '@nestjs/common/exceptions';
+import { BadRequestException, HttpException } from '@nestjs/common/exceptions';
 import { AdminGuard } from 'src/auth/user-role.enum/admin.guard';
-import { FamilyAdminGuard } from 'src/auth/user-role.enum/family-admin.guard';
+import { FamilyAdminGuard } from 'src/auth/user-role.enum/family-admin.guard';import { UserGuard } from 'src/auth/user-role.enum/user.guard';
 
 
 
@@ -49,8 +49,8 @@ export class ProfilesController {
   }
 
   // Recovery of all profiles with error message.
-  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
   @ApiOperation({ summary: `Search for user profiles.`})
+  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
   @Get()
   async findAll() {
     const profileExist = await this.profilesService.findAllProfiles();
@@ -61,7 +61,8 @@ export class ProfilesController {
   }
 
   
-  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
+  
+  @ApiOperation({ summary: "Search for a profile by id." })
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const profileById = await this.profilesService.findOneProfileById(+id);
@@ -75,9 +76,25 @@ export class ProfilesController {
     }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profilesService.updateProfileById(+id, updateProfileDto);
+  
+  // Edit a profile by its id.
+  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
+  @ApiOperation({summary: `Editing a profile.`})
+  @Patch()
+  async update(@Body() updateProfilesDto: UpdateProfilesDto, @Req() req) {
+
+    // condition to know if the presentation of the user exists.
+    if ( req.user.profile === null ){
+      throw new HttpException(`Impossible! Please create a profile first.`, HttpStatus.FORBIDDEN)
+    }
+
+    const updatedProfile = await this.profilesService.updateProfileById(req.user.profile.id, updateProfilesDto)
+
+    return{
+      statusCode: 200,
+      message: `The profile has been modified.`,
+      data: updatedProfile
+    }
   }
 
   @Delete(':id')

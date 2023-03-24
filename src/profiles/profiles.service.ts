@@ -38,8 +38,18 @@ export class ProfilesService {
 
 
   // Edit a profile by its id.
-  updateProfileById(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+  async updateProfileById(id: number, updateProfilesDto: UpdateProfileDto): Promise <Profiles> {
+
+    const profile = await Profiles.findOneBy({id})
+
+    profile.job = updateProfilesDto.job
+    profile.father = updateProfilesDto.father
+    profile.mother = updateProfilesDto.mother
+    profile.myself = updateProfilesDto.myself
+    profile.travel = updateProfilesDto.travel
+    profile.anecdote = updateProfilesDto.anecdote
+    
+    return await profile.save();
   }
 
 
