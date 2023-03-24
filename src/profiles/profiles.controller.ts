@@ -61,10 +61,18 @@ export class ProfilesController {
   }
 
   
-
+  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profilesService.findOneProfileById(+id);
+  async findOne(@Param('id') id: string) {
+    const profileById = await this.profilesService.findOneProfileById(+id);
+    if ( !profileById){
+      throw new HttpException (`The profile does not exist.`, HttpStatus.NOT_FOUND)
+    }
+    return {
+      statusCode: 200,
+      message: `Successful recovery of your profile.`,
+      data: profileById
+    }
   }
 
   @Patch(':id')
