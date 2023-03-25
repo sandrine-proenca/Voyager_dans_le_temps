@@ -113,8 +113,20 @@ export class ProfilesController {
     }
   }
 
+
+  // Delete a profile.
+  @ApiOperation({ summary: `Delete a profile by id`})
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profilesService.removeProfileById(+id);
+  async remove(@Param('id') id: number) {
+    const profileExist= await this.profilesService.findOneProfileById(id);
+    if ( !profileExist){
+      throw new BadRequestException(`The profile does not exist.`)
+    }
+    const deletedProfile = await this.remove(id)
+    return {
+      statusCode: 200,
+      message: `Successful profile deletion`,
+      data: deletedProfile
+    }
   }
 }
