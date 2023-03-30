@@ -24,6 +24,7 @@ import { FamilyAdminGuard } from 'src/auth/user-role.enum/family-admin.guard';im
  */
 @ApiTags(`PROFILES`)
 @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(JwtAuthGuard)
 @Controller('profiles')
 export class ProfilesController {
   constructor(
@@ -33,7 +34,6 @@ export class ProfilesController {
 
   // Creating the profile with error message.
   @ApiBody({type: CreateProfilesDto})
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: `Adding a profile to a user account.`})
   @Post()
   async create(@Body() createProfileDto: CreateProfilesDto,@Request() req) {
@@ -49,15 +49,19 @@ export class ProfilesController {
   }
 
   // Recovery of all profiles with error message.
+  @ApiBody({ type: CreateProfilesDto})
   @ApiOperation({ summary: `Search for user profiles.`})
-  @UseGuards(JwtAuthGuard, FamilyAdminGuard, AdminGuard)
   @Get()
   async findAll() {
     const profileExist = await this.profilesService.findAllProfiles();
     if ( !profileExist){
       throw new HttpException(`No profile exists.`, HttpStatus.NOT_FOUND)
     }
-    return profileExist
+    return { 
+      statusCode: 200,
+      message: `Successful recovery of all profiles`,
+      data: profileExist
+    }
   }
 
   
@@ -67,7 +71,7 @@ export class ProfilesController {
   async findOne(@Param('id') id: string) {
     const profileById = await this.profilesService.findOneProfileById(+id);
     if ( !profileById){
-      throw new HttpException (`The profile does not exist.`, HttpStatus.NOT_FOUND)
+      throw new BadRequestException (`The profile does not exist.`)
     }
     return {
       statusCode: 200,
@@ -94,24 +98,7 @@ export class ProfilesController {
     }
   }
 
-  // Edit a profile by its id.
-  @ApiOperation({summary: `Editing a profile.`})
-  @Patch()
-  async updateProfile(@Body() updateProfilesDto: UpdateProfilesDto, @Req() req) {
-
-    // condition to know if the presentation of the user exists.
-    if ( req.user.profile === null ){
-      throw new HttpException(`Impossible! Please create a profile first.`, HttpStatus.FORBIDDEN)
-    }
-
-    const updatedProfile = await this.profilesService.updateProfileById(req.user.profile.id, updateProfilesDto)
-
-    return{
-      statusCode: 200,
-      message: `The profile has been modified.`,
-      data: updatedProfile
-    }
-  }
+  
 
 
   // Delete a profile.
@@ -122,7 +109,7 @@ export class ProfilesController {
     if ( !profileExist){
       throw new BadRequestException(`The profile does not exist.`)
     }
-    const deletedProfile = await this.remove(id)
+    const deletedProfile = await this.profilesService.removeProfileById(id)
     return {
       statusCode: 200,
       message: `Successful profile deletion`,
