@@ -6,7 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {  //fonction qui démarre notre appli
   const app = await NestFactory.create(AppModule, { cors: true });
   const config = new DocumentBuilder()
-    .setTitle(`voyager_dans_le_temps`)
+    .setTitle(`album_photo`)
     .setDescription(`API album photo`)
     .setVersion('1.0')
     .build();
