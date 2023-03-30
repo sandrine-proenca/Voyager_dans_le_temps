@@ -1,10 +1,9 @@
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn } from "typeorm";
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
-import { Profiles } from "src/profiles/entities/profile.entity";
-import { Photography } from "src/photographies/entities/photography.entity";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
+import { Album } from "src/albums/entities/album.entity";
 
 /*User's table */
 @Entity('users')
@@ -51,18 +50,37 @@ export class User extends BaseEntity{
     @Column()
     address: string;
 
+    @ApiProperty()
+    @Column()
+    job: string
+
+    @ApiProperty()
+    @Column()
+    father: string
+
+    @ApiProperty()
+    @Column()
+    mother: string
+
+    @ApiProperty()
+    @Column()
+    myself: string
+
+    @ApiProperty()
+    @Column()
+    travel: string
+
+    @ApiProperty()
+    @Column()
+    anecdote: string
+
 
     /* Relations with other tables */
 
-    @ApiProperty({type: () => Profiles})
-    @OneToOne( () => Profiles, (profile) => profile.user)
-    @JoinColumn()
-    profile: Profiles
-
-
-    @ApiProperty({type: () => Photography})
-    @OneToMany(() => Photography, (photography) =>photography.user)
-    photographies: Photography[]
+    @ApiProperty({ type: () => Commentary})
+    @ManyToMany( () => Album)
+    @JoinTable()
+    albums: Album[]
 
     
     @ApiProperty({ type: () => Commentary})

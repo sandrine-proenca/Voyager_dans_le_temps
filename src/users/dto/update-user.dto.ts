@@ -32,5 +32,29 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsString()
     address: string;
 
+    @ApiProperty()
+    @IsString()
+    job: string;
+
+    @ApiProperty()
+    @IsString()
+    father: string;
+
+    @ApiProperty()
+    @IsString()
+    mother: string;
+
+    @ApiProperty()
+    @IsString()
+    myself: string;
+
+    @ApiProperty()
+    @IsString()
+    travel: string;
+
+    @ApiProperty()
+    @IsString()
+    anecdote: string;
+
 }
 

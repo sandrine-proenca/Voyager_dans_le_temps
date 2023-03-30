@@ -64,7 +64,14 @@ export class UsersService
     updateUser.lastname = updateUserDto.lastname,
     updateUser.birthday = updateUserDto.birthday,
     updateUser.phone = updateUserDto.phone,
-    updateUser.address = updateUserDto.address
+    updateUser.address = updateUserDto.address, 
+    updateUser.job = updateUserDto.job,
+    updateUser.father = updateUserDto.father,
+    updateUser.mother = updateUserDto.mother,
+    updateUser.myself = updateUserDto.myself,
+    updateUser.travel = updateUserDto.travel,
+    updateUser.anecdote = updateUserDto.anecdote,
+
 
     await User.save(updateUser)
 

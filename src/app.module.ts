@@ -4,15 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { ProfilesModule } from './profiles/profiles.module';
-import { PhotographiesModule } from './photographies/photographies.module';
 import { CommentsModule } from './comments/comments.module';
 import { User as Users } from './users/entities/user.entity';
 import { Commentary as Commentaries } from './comments/entities/comment.entity';
-import { Profiles } from './profiles/entities/profile.entity';
-import { Photography as Photographies } from './photographies/entities/photography.entity';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
+import { AlbumsModule } from './albums/albums.module';
 
 @Module({
   imports: [
@@ -24,15 +21,14 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Users, Profiles,Photographies, Commentaries],
+      entities: [Users, Commentaries],
       synchronize: true,
       logging: false,
     }),
     UsersModule,
-    ProfilesModule,
-    PhotographiesModule,
     CommentsModule,
-    AuthModule],
+    AuthModule,
+    AlbumsModule],
   controllers: [AppController],
   providers: [AppService],
 })

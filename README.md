@@ -62,6 +62,8 @@ $ nest g resource photographies
 
 $ nest g resource comments
 
+$  nest g resource families
+
 $ nest g module auth
 
 $ nest g service auth
