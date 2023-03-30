@@ -10,6 +10,7 @@ import { Commentary as Commentaries } from './comments/entities/comment.entity';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
 import { AlbumsModule } from './albums/albums.module';
+import { Album } from './albums/entities/album.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { AlbumsModule } from './albums/albums.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Users, Commentaries],
+      entities: [Users, Album, Commentaries],
       synchronize: true,
       logging: false,
     }),
