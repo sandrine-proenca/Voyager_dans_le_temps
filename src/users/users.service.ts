@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common/exceptions';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -18,11 +19,16 @@ export class UsersService
 {
 
   /* Create a user in the database */
-  async create(createUserDto: CreateUserDto)
+  create(createUserDto: CreateUserDto)
   {
-    const user = await User.create({ ...createUserDto }).save();
-    delete user.password;
-    return user;
+    try
+    {
+      return User.create({ ...createUserDto }).save();
+    }
+    catch (error)
+    {
+      throw new InternalServerErrorException()
+    }
   };
 
 
@@ -36,56 +42,76 @@ export class UsersService
   /* Retrieving all users in the database */
   async findAll()
   {
-    return await User.find();
+    try
+    {
+      return await User.find();
+    }
+    catch (error)
+    {
+      throw new InternalServerErrorException();
+    }
   }
 
 
   /*  Retrieving a user in the database by his id */
   async findOne(id: number)
   {
-    const user = await User.findOneBy({ id })
-
-    if (user)
+    try
     {
-      return user
+      return await User.findOneBy({ id })
+    }
+    catch (error)
+    {
+      throw new InternalServerErrorException();
     }
 
-    return undefined
   }
 
 
   /* Deleting a user in the database by his id */
   async update(id: number, updateUserDto: UpdateUserDto)
   {
-    const updateUser = await User.findOneBy({id})
+    const updateUser = await User.findOneBy({ id });
+
+    if (!updateUser) throw new NotFoundException();
 
     updateUser.email = updateUserDto.email,
-    updateUser.firstname = updateUserDto.firstname,
-    updateUser.lastname = updateUserDto.lastname,
-    updateUser.birthday = updateUserDto.birthday,
-    updateUser.phone = updateUserDto.phone,
-    updateUser.address = updateUserDto.address, 
-    updateUser.job = updateUserDto.job,
-    updateUser.father = updateUserDto.father,
-    updateUser.mother = updateUserDto.mother,
-    updateUser.myself = updateUserDto.myself,
-    updateUser.travel = updateUserDto.travel,
-    updateUser.anecdote = updateUserDto.anecdote,
-
-
-    await User.save(updateUser)
-
-    return updateUser
+      updateUser.firstname = updateUserDto.firstname,
+      updateUser.lastname = updateUserDto.lastname,
+      updateUser.birthday = updateUserDto.birthday,
+      updateUser.phone = updateUserDto.phone,
+      updateUser.address = updateUserDto.address,
+      updateUser.job = updateUserDto.job,
+      updateUser.father = updateUserDto.father,
+      updateUser.mother = updateUserDto.mother,
+      updateUser.myself = updateUserDto.myself,
+      updateUser.travel = updateUserDto.travel,
+      updateUser.anecdote = updateUserDto.anecdote;
+    try
+    {
+      return await User.save(updateUser);
+    }
+    catch (error)
+    {
+      throw new InternalServerErrorException();
+    }
   }
 
   /* Delete a user in the database by his id */
-  async remove(id: number | any)
+  async remove(id: number)
   {
-    const user = await User.remove(id)
-
-    if(user){
-      return user
+    try
+    {
+      const user = await this.findOne(id);
+      if (user)
+      {
+        return await user.remove();
+      }
+      return null;
     }
-    return undefined
+    catch (error)
+    {
+      throw new InternalServerErrorException();
+    }
   }
 }
