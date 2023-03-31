@@ -11,6 +11,10 @@ export class Album extends BaseEntity {
     id: number
 
     @ApiProperty()
+    @Column({length:50})
+    familyName: string
+
+    @ApiProperty()
     @Column({
         nullable: true,
         type: "bytea",
