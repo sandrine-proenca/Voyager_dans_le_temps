@@ -16,8 +16,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
  * * **update**         : Editing a user.
  * * **remove**         : Deleting a user account by his id.
  */
-@ApiTags('USERS')
-@UseInterceptors(ClassSerializerInterceptor)
+@ApiTags('USERS') // cree une categorie USERS dans swagger UI
+@UseInterceptors(ClassSerializerInterceptor) // Ne renvoie pas les proprietes d'une entité marquées par @Exclude()
 @Controller('users')
 export class UsersController
 {
@@ -27,24 +27,26 @@ export class UsersController
   @ApiTags(`Sign Up`)
   @ApiOperation({ summary: `Creating a user account` })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @Post(`register`)
   async create(@Body() createUserDto: CreateUserDto)
   {
 
     if (createUserDto.password !== createUserDto.password_confirm)
     {
-      throw new ConflictException(`Passwords are not the same`)
+      throw new ConflictException(`Passwords are not the same`);
     }
 
-    const ExistingUser = await this.usersService.findUserByEmail(createUserDto.email)
+    const ExistingUser = await this.usersService.findUserByEmail(createUserDto.email);
+
     if (ExistingUser)
     {
       throw new HttpException(`The email already exists !`, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    createUserDto.password = await encodePassword(createUserDto.password)
+    createUserDto.password = encodePassword(createUserDto.password);
 
-    const newAccount = await this.usersService.create(createUserDto)
+    const newAccount = await this.usersService.create(createUserDto);
 
     return {
       statusCode: 201,
@@ -54,11 +56,13 @@ export class UsersController
   }
 
 
+  @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @ApiOperation({ summary: `Retrieving all users` })
   @Get()
   async findAll()
   {
-    const allUsers = await this.usersService.findAll()
+    const allUsers = await this.usersService.findAll();
+
     return {
       statusCode: 200,
       message: `Successful users recovery !`,
@@ -67,6 +71,7 @@ export class UsersController
   }
 
 
+  @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @ApiOperation({ summary: `Retrieving a user by id` })
   @Get(':id')
   async findOne(@Param('id') id: number)
@@ -74,7 +79,7 @@ export class UsersController
     const oneUser = await this.usersService.findOne(id);
     if (!oneUser)
     {
-      throw new BadRequestException(`User not found`)
+      throw new BadRequestException(`User not found`);
     }
     return {
       statusCode: 200,
@@ -84,23 +89,18 @@ export class UsersController
   }
 
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @ApiOperation({ summary: `Editing a user by his id` })
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto)
   {
-
-    const isUserExists = await this.usersService.findOne(id);
-    if (!isUserExists)
-    {
-      throw new BadRequestException(`User not found`);
-    }
-
     const updatedUser = await this.usersService.update(id, updateUserDto);
+
     if (!updatedUser)
     {
       throw new HttpException('Erreur Server', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     return {
       statusCode: 201,
       message: `Saved user changes`,
@@ -109,7 +109,7 @@ export class UsersController
   }
 
 
-  @UseGuards(JwtAuthGuard)
+  /* @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @ApiOperation({ summary: `Editing a user` })
   @Patch()
   async updateUser(@Body() updateUserDto: UpdateUserDto, @Request() req)
@@ -128,58 +128,22 @@ export class UsersController
       message: `Saved user changes`,
       data: updateAccount
     }
-  }
+  } */
 
 
   /** Deleting a user by its id for the admin or family's admin. */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @ApiOperation({ summary: ` Deleting a user account by his id ` })
   @ApiResponse({ status: 200, description: `Account deleted` })
   @Delete(':id')
   async removeUser(@Param('id') id: string)
   {
-    const userExist = await this.usersService.findOne(+id)
-    if (!userExist)
-    {
-      throw new BadRequestException(`User not found`)
-    }
-    const deleteUser = await userExist.remove()
-    if (!deleteUser)
-    {
-      throw new HttpException(`Erreur Server`, HttpStatus.INTERNAL_SERVER_ERROR)
-    }
+    const deleteUser = await this.usersService.remove(+id);
+
     return {
       statusCode: 200,
       message: `The deletion of the user is saved`,
       data: deleteUser
     }
-  }
-
-
-  /**Deleting your own account */
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: `Deleting your own account` })
-  @ApiResponse({ status: 200, description: `Account deleted` })
-  @ApiProperty()
-  @Delete()
-  async remove(@Request() req)
-  {
-    const account = req.user.id
-
-    const user = await this.usersService.findOne(account);
-    if (!user)
-    {
-      throw new HttpException(`User not found`, HttpStatus.NOT_FOUND);
-    }
-    const deletedUser = await this.usersService.remove(user);
-    if (!deletedUser)
-    {
-      throw new HttpException(`Erreur Server`, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    return {
-      statusCode: 200,
-      message: `The deletion of the user is saved`,
-      data: deletedUser
-    };
   }
 }

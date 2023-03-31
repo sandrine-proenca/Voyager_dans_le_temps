@@ -75,7 +75,7 @@ export class UsersService
 
     if (!updateUser) throw new NotFoundException();
 
-    updateUser.email = updateUserDto.email,
+      updateUser.email = updateUserDto.email,
       updateUser.firstname = updateUserDto.firstname,
       updateUser.lastname = updateUserDto.lastname,
       updateUser.birthday = updateUserDto.birthday,
