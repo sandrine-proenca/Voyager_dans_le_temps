@@ -30,9 +30,11 @@ export class Album extends BaseEntity {
     
     /* Relations with other tables */
 
+    @ApiProperty()
     @OneToMany( () => Commentary, (commentary) => commentary.album)
     commentaries: Commentary[]
 
+    @ApiProperty( { type: () => [User]})
     @ManyToMany( () => User, (user) => user.albums)
     users: User[];
 
