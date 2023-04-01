@@ -4,6 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
 import { Album } from "src/albums/entities/album.entity";
+import { Photo } from "src/photos/entities/photo.entity";
 
 /*User's table */
 @Entity('users')
@@ -85,4 +86,8 @@ export class User extends BaseEntity{
     @ApiProperty()
     @OneToMany( () => Commentary, (commentary) => commentary.user)
     commentaries: Commentary[]
+
+    @ApiProperty()
+    @OneToMany( () => Photo, (photo) => photo.user)
+    photos: Photo[]
 }

@@ -7,5 +7,5 @@ export class UpdateAlbumDto extends PartialType(CreateAlbumDto) {
 
     @ApiProperty()
     @IsString()
-    information: string
+    name: string
 }

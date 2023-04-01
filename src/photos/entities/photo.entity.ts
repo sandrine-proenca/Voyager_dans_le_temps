@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Album } from "src/albums/entities/album.entity";
 import { Commentary } from "src/comments/entities/comment.entity";
-import { BaseEntity, Column, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { BaseEntity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 export class Photo extends BaseEntity {
 
@@ -25,11 +26,15 @@ export class Photo extends BaseEntity {
     
     /* Relations with other tables */
 
+    @ApiProperty({ type: ()=> User})
+    @ManyToOne( ()=> User, (user) => user.photos, { nullable: false, onDelete: 'CASCADE'})
+    user: User
+
     @ApiProperty()
     @ManyToOne( () => Album, (album) => album.photos)
     album: Album
 
     @ApiProperty()
-    @ManyToOne( () => Commentary, (commentary) => commentary.photo)
+    @OneToMany( () => Commentary, (commentary) => commentary.photo)
     commentaries: Commentary[]
 }
