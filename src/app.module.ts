@@ -11,6 +11,7 @@ import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
 import { AlbumsModule } from './albums/albums.module';
 import { Album } from './albums/entities/album.entity';
+import { PhotosModule } from './photos/photos.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { Album } from './albums/entities/album.entity';
     UsersModule,
     CommentsModule,
     AuthModule,
-    AlbumsModule],
+    AlbumsModule,
+    PhotosModule],
   controllers: [AppController],
   providers: [AppService],
 })
