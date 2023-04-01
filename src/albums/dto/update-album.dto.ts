@@ -4,13 +4,6 @@ import { CreateAlbumDto } from './create-album.dto';
 
 export class UpdateAlbumDto extends PartialType(CreateAlbumDto) {
     
-    @ApiProperty()
-    @IsString()
-    familyName: string
-
-    @ApiProperty()
-    @IsString()
-    photo: string;
 
     @ApiProperty()
     @IsString()
