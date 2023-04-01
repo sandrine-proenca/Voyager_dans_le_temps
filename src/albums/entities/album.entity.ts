@@ -4,7 +4,6 @@ import { User } from "src/users/entities/user.entity";
 import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity('albums')
-@Unique('familyName')
 export class Album extends BaseEntity {
 
     /*Photography's table*/
@@ -13,7 +12,7 @@ export class Album extends BaseEntity {
     id: number
 
     @ApiProperty()
-    @Column({length:50})
+    @Column({ length:50, unique: true })
     familyName: string
 
     @ApiProperty()
