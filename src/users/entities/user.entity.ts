@@ -77,13 +77,11 @@ export class User extends BaseEntity{
 
     /* Relations with other tables */
 
-    @ApiProperty({ type: () => Commentary})
-    @ManyToMany( () => Album)
+    @ManyToMany( () => Album, (album) => album.users)
     @JoinTable()
     albums: Album[]
 
-    
-    @ApiProperty({ type: () => Commentary})
+   
     @OneToMany( () => Commentary, (commentary) => commentary.user)
     commentaries: Commentary[]
 }
