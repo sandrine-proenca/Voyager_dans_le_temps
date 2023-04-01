@@ -1,4 +1,18 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 import { CreateAlbumDto } from './create-album.dto';
 
-export class UpdateAlbumDto extends PartialType(CreateAlbumDto) {}
+export class UpdateAlbumDto extends PartialType(CreateAlbumDto) {
+    
+    @ApiProperty()
+    @IsString()
+    familyName: string
+
+    @ApiProperty()
+    @IsString()
+    photo: string;
+
+    @ApiProperty()
+    @IsString()
+    information: string
+}
