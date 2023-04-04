@@ -31,7 +31,7 @@ export class Photos extends BaseEntity {
     user: User
 
     @ApiProperty()
-    @ManyToOne( () => Albums, (album) => album.photos)
+    @ManyToOne( () => Albums, (album) => album.photos, { nullable: false, onDelete: 'CASCADE'})
     album: Albums
 
     @ApiProperty()
