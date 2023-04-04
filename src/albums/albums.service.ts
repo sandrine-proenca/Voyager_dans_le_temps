@@ -64,10 +64,10 @@ export class AlbumsService
   {
     try
     {
-      const album = await this.findOne(id);
+      const album = await Album.findOneBy({id});
       if (album)
       {
-        return await Album.remove();
+        return await album.remove();
       }
       return null;
     }
