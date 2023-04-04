@@ -6,12 +6,13 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { CommentsModule } from './comments/comments.module';
 import { User as Users } from './users/entities/user.entity';
-import { Commentary as Commentaries } from './comments/entities/comment.entity';
+import { Commentaries as Commentaries } from './comments/entities/comment.entity';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
 import { AlbumsModule } from './albums/albums.module';
-import { Album } from './albums/entities/album.entity';
+import { Albums } from './albums/entities/album.entity';
 import { PhotosModule } from './photos/photos.module';
+import { Photos } from './photos/entities/photo.entity';
 
 @Module({
   imports: [
@@ -23,9 +24,9 @@ import { PhotosModule } from './photos/photos.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Users, Album, Commentaries],
+      entities: [Users, Albums, Commentaries,Photos],
       synchronize: true,
-      logging: false,
+      logging: true,
     }),
     UsersModule,
     CommentsModule,
@@ -35,5 +36,5 @@ import { PhotosModule } from './photos/photos.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { constructor(private datasource: DataSource) {} }
+export class AppModule {}
 

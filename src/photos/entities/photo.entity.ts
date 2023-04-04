@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Album } from "src/albums/entities/album.entity";
-import { Commentary } from "src/comments/entities/comment.entity";
+import { Albums } from "src/albums/entities/album.entity";
+import { Commentaries } from "src/comments/entities/comment.entity";
 import { User } from "src/users/entities/user.entity";
 import { BaseEntity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-export class Photo extends BaseEntity {
+export class Photos extends BaseEntity {
 
     /* Photo's table */
     @ApiProperty()
@@ -31,10 +31,10 @@ export class Photo extends BaseEntity {
     user: User
 
     @ApiProperty()
-    @ManyToOne( () => Album, (album) => album.photos)
-    album: Album
+    @ManyToOne( () => Albums, (album) => album.photos)
+    album: Albums
 
     @ApiProperty()
-    @OneToMany( () => Commentary, (commentary) => commentary.photo)
-    commentaries: Commentary[]
+    @OneToMany( () => Commentaries, (commentary) => commentary.photo)
+    commentaries: Commentaries[]
 }
