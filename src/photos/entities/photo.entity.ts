@@ -1,10 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Albums } from "src/albums/entities/album.entity";
-import { Commentaries } from "src/comments/entities/comment.entity";
+import { Album } from "src/albums/entities/album.entity";
+import { Commentary } from "src/comments/entities/comment.entity";
 import { User } from "src/users/entities/user.entity";
-import { BaseEntity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-export class Photos extends BaseEntity {
+@Entity('photos')
+export class Photo extends BaseEntity {
 
     /* Photo's table */
     @ApiProperty()
@@ -13,28 +14,27 @@ export class Photos extends BaseEntity {
 
     @ApiProperty()
     @Column({
-        nullable: true,
         type: "bytea",
     })
     photo: string;
 
     @ApiProperty()
     @Column()
-    information: string
+    information: string;
 
 
     
     /* Relations with other tables */
 
     @ApiProperty({ type: ()=> User})
-    @ManyToOne( ()=> User, (user) => user.photos, { nullable: false, onDelete: 'CASCADE'})
+    @ManyToOne( ()=> User, (user) => user.photos)
     user: User
 
     @ApiProperty()
-    @ManyToOne( () => Albums, (album) => album.photos, { nullable: false, onDelete: 'CASCADE'})
-    album: Albums
+    @ManyToOne( () => Album, (album) => album.photos)
+    album: Album;
 
     @ApiProperty()
-    @OneToMany( () => Commentaries, (commentary) => commentary.photo)
-    commentaries: Commentaries[]
+    @OneToMany( () => Commentary, (commentary) => commentary.photo)
+    commentaries: Commentary[];
 }

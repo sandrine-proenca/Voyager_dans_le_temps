@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Albums } from './entities/album.entity';
+import { Album } from './entities/album.entity';
 
 @Injectable()
 export class AlbumsService
@@ -11,7 +11,7 @@ export class AlbumsService
   {
     try
     {
-      return await Albums.create({ ...createAlbumDto }).save();
+      return await Album.create({ ...createAlbumDto }).save();
     }
     catch (error)
     {
@@ -24,7 +24,7 @@ export class AlbumsService
   {
     try
     {
-    return await Albums.find();
+    return await Album.find();
   }
   catch (error)
   {
@@ -37,7 +37,7 @@ export class AlbumsService
   {
     try
     {
-      return await Albums.findOneBy({ id })
+      return await Album.findOneBy({ id })
     }
     catch (error)
     {
@@ -47,12 +47,12 @@ export class AlbumsService
 
   async update(id: number, updateAlbumDto: UpdateAlbumDto)
   {
-    const updatedAlbum = await Albums.findOneBy({id});
+    const updatedAlbum = await Album.findOneBy({id});
     if (!updatedAlbum) throw new NotFoundException();
     updatedAlbum.name = updateAlbumDto.name;
     try
     {
-      return await Albums.save(updatedAlbum);
+      return await Album.save(updatedAlbum);
     }
     catch (error)
     {
@@ -64,7 +64,7 @@ export class AlbumsService
   {
     try
     {
-      const album = await Albums.findOneBy({id});
+      const album = await Album.findOneBy({id});
       if (album)
       {
         return await album.remove();

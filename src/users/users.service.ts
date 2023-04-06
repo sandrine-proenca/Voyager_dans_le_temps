@@ -19,7 +19,7 @@ export class UsersService
 {
 
   /* Create a user in the database */
-  create(createUserDto: CreateUserDto)
+  create(createUserDto: CreateUserDto, hash: string)
   {
     try
     {

@@ -1,10 +1,10 @@
 import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Exclude } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
-import { Commentaries } from "src/comments/entities/comment.entity";
+import { Commentary } from "src/comments/entities/comment.entity";
 import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
-import { Albums } from "src/albums/entities/album.entity";
-import { Photos } from "src/photos/entities/photo.entity";
+import { Album } from "src/albums/entities/album.entity";
+import { Photo } from "src/photos/entities/photo.entity";
 
 /*User's table */
 @Entity('users')
@@ -78,16 +78,16 @@ export class User extends BaseEntity{
 
     /* Relations with other tables */
 
-    @ApiProperty( { type: () => [Albums]})
-    @ManyToMany( () => Albums, (album) => album.users)
+    @ApiProperty( { type: () => [Album]})
+    @ManyToMany( () => Album, (album) => album.users)
     @JoinTable()
-    albums: Albums[]
+    albums: Album[]
 
     @ApiProperty()
-    @OneToMany( () => Commentaries, (commentary) => commentary.user)
-    commentaries: Commentaries[]
+    @OneToMany( () => Commentary, (commentary) => commentary.user)
+    commentaries: Commentary[]
 
     @ApiProperty()
-    @OneToMany( () => Photos, (photo) => photo.user)
-    photos: Photos[]
+    @OneToMany( () => Photo, (photo) => photo.user)
+    photos: Photo[]
 }

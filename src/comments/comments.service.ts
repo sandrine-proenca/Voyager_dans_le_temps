@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Commentaries } from './entities/comment.entity';
+import { Commentary } from './entities/comment.entity';
 
 @Injectable()
 export class CommentsService
@@ -10,7 +10,7 @@ export class CommentsService
   {
     try
     {
-      return await Commentaries.create({ ...createCommentDto }).save();
+      return await Commentary.create({ ...createCommentDto }).save();
     }
     catch (error)
     {
@@ -22,7 +22,7 @@ export class CommentsService
   {
     try
     {
-      return await Commentaries.find();
+      return await Commentary.find();
     }
     catch (error)
     {
@@ -34,7 +34,7 @@ export class CommentsService
   {
     try
     {
-      return await Commentaries.findOneBy({ id })
+      return await Commentary.findOneBy({ id })
     }
     catch (error)
     {
@@ -44,14 +44,14 @@ export class CommentsService
 
   async update(id: number, updateCommentDto: UpdateCommentDto)
   {
-    const updatedCommentary = await Commentaries.findOneBy({id});
+    const updatedCommentary = await Commentary.findOneBy({id});
 
     if (!updatedCommentary) throw new NotFoundException();
     updatedCommentary.commentary = updateCommentDto.commentary;
 
     try 
     {
-      return await Commentaries.save(updatedCommentary);
+      return await Commentary.save(updatedCommentary);
     }
     catch (error)
     {

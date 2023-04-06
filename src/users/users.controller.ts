@@ -2,8 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Cla
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiResponse, ApiTags, ApiOperation, ApiProperty } from '@nestjs/swagger';
-import { encodePassword } from 'src/auth/bcrypt';
+import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';import * as bcrypt from 'bcrypt';
 import { UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -27,10 +26,10 @@ export class UsersController
   @ApiTags(`Sign Up`)
   @ApiOperation({ summary: `Creating a user account` })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @Post(`register`)
   async create(@Body() createUserDto: CreateUserDto)
   {
+    const saltOrRounds = 10;
 
     if (createUserDto.password !== createUserDto.password_confirm)
     {
@@ -44,14 +43,16 @@ export class UsersController
       throw new HttpException(`The email already exists !`, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    createUserDto.password = encodePassword(createUserDto.password);
+    // Hashage du password
+    const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
 
-    const newAccount = await this.usersService.create(createUserDto);
+    // Création du user
+    const user = await this.usersService.create(createUserDto, hash);
 
     return {
       statusCode: 201,
       message: `Successful creation of a new account !`,
-      data: newAccount
+      data: user
     };
   }
 

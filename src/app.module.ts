@@ -5,14 +5,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { CommentsModule } from './comments/comments.module';
-import { User as Users } from './users/entities/user.entity';
-import { Commentaries as Commentaries } from './comments/entities/comment.entity';
-import { DataSource } from 'typeorm';
+import { User } from './users/entities/user.entity';
+import { Commentary } from './comments/entities/comment.entity';
 import { AuthModule } from './auth/auth.module';
 import { AlbumsModule } from './albums/albums.module';
-import { Albums } from './albums/entities/album.entity';
+import { Album } from './albums/entities/album.entity';
 import { PhotosModule } from './photos/photos.module';
-import { Photos } from './photos/entities/photo.entity';
+import { Photo } from './photos/entities/photo.entity';
 
 @Module({
   imports: [
@@ -24,9 +23,10 @@ import { Photos } from './photos/entities/photo.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Users, Albums, Commentaries,Photos],
+      entities: [User, Album, Commentary, Photo],
+      // autoLoadEntities: true,
       synchronize: true,
-      logging: true,
+      logging: false,
     }),
     UsersModule,
     CommentsModule,
