@@ -50,6 +50,7 @@ export class AlbumsService
     const updatedAlbum = await Album.findOneBy({id});
     if (!updatedAlbum) throw new NotFoundException();
     updatedAlbum.name = updateAlbumDto.name;
+    updatedAlbum.users = updateAlbumDto.users;
     try
     {
       return await Album.save(updatedAlbum);

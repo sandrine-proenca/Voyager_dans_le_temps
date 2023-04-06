@@ -24,7 +24,7 @@ export class Album extends BaseEntity {
     photos: Photo[]
 
     @ApiProperty( { type: () => [User]})
-    @ManyToMany( () => User, (user) => user.albums)
+    @ManyToMany( () => User, (user) => user.albums, {eager: true})
     users: User[];
 
 }
