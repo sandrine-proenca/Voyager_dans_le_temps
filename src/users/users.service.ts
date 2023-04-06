@@ -19,16 +19,26 @@ export class UsersService
 {
 
   /* Create a user in the database */
-  create(createUserDto: CreateUserDto, hash: string)
+  async create(createUserDto: CreateUserDto, hash: string): Promise<User>
   {
-    try
-    {
-      return User.create({ ...createUserDto }).save();
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException()
-    }
+      const newUser = new User();
+
+      newUser.email = createUserDto.email;
+      newUser.password = hash;
+      newUser.firstname = createUserDto.firstname;
+      newUser.lastname = createUserDto.lastname;
+      newUser.birthday = createUserDto.birthday;
+      newUser.phone = createUserDto.phone;
+      newUser.address = createUserDto.address;
+      newUser.job = createUserDto.job;
+      newUser.father = createUserDto.father;
+      newUser.mother = createUserDto.mother;
+      newUser.myself = createUserDto.myself;
+      newUser.travel = createUserDto.travel;
+      newUser.anecdote = createUserDto.anecdote;
+
+      await newUser.save();
+      return newUser;
   };
 
 

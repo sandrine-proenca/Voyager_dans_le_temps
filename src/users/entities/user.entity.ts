@@ -15,12 +15,12 @@ export class User extends BaseEntity{
     id: number;
 
     @ApiProperty()
-    @Column({ length:50, unique: true })
+    @Column({ unique: true })
     email: string;
 
     @ApiProperty()
     @Exclude()
-    @Column({ length:50, nullable: false })
+    @Column({nullable: false })
     password: string;
 
     @ApiProperty()
@@ -32,11 +32,11 @@ export class User extends BaseEntity{
     role: UserRoleEnum;
 
     @ApiProperty()
-    @Column({length:50, nullable: false})
+    @Column({nullable: false})
     firstname: string;
 
     @ApiProperty()
-    @Column({length:50, nullable: false})
+    @Column({nullable: false})
     lastname: string;
 
     @ApiProperty()
@@ -48,19 +48,19 @@ export class User extends BaseEntity{
     phone: string;
 
     @ApiProperty()
-    @Column({length:250})
+    @Column()
     address: string;
 
     @ApiProperty()
-    @Column({length:250})
+    @Column()
     job: string
 
     @ApiProperty()
-    @Column({length:50})
+    @Column()
     father: string
 
     @ApiProperty()
-    @Column({length:50})
+    @Column()
     mother: string
 
     @ApiProperty()

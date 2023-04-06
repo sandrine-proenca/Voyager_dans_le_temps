@@ -16,11 +16,6 @@ export class CreateUserDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    password_confirm: string;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
     firstname: string;
 
     @ApiProperty()

@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';import * as bcrypt from 'bcrypt';
 import { UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { log } from 'console';
 
 
 /**
@@ -31,11 +32,6 @@ export class UsersController
   {
     const saltOrRounds = 10;
 
-    if (createUserDto.password !== createUserDto.password_confirm)
-    {
-      throw new ConflictException(`Passwords are not the same`);
-    }
-
     const ExistingUser = await this.usersService.findUserByEmail(createUserDto.email);
 
     if (ExistingUser)
@@ -43,11 +39,18 @@ export class UsersController
       throw new HttpException(`The email already exists !`, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    const existingEmail = await this.usersService.findUserByEmail(createUserDto.email);
+    if(existingEmail){
+      throw new HttpException(`This email already exists, please modify it.`,HttpStatus.CONFLICT);
+    }
+
     // Hashage du password
     const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
+    
 
     // Création du user
     const user = await this.usersService.create(createUserDto, hash);
+    
 
     return {
       statusCode: 201,
