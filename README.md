@@ -49,6 +49,8 @@ $ npm install --save @nestjs/serve-static
 
 $ npm install -g typescript
 
+$ npm i -D @types/multer
+
 
 ```
 ### Création des tables typeorm dans le Terminal 'bash':
