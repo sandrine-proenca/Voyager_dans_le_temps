@@ -71,3 +71,15 @@ $ nest g module auth
 $ nest g service auth
 
 ```
+
+## upload an image
+
+### Sending HTTP request
+
+```
+Once the server has started successfully, you can start sending HTTP requests to the three endpoints:
+
+- GET request - `localhost:3000/:imgpath` - Get an uploaded image
+- POST request - `localhost:3000` - Upload a single image
+- POST request - `localhost:3000/multiple` - Upload multiple images at a time
+```

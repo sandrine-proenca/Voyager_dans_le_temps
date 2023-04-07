@@ -12,6 +12,7 @@ import { AlbumsModule } from './albums/albums.module';
 import { Album } from './albums/entities/album.entity';
 import { PhotosModule } from './photos/photos.module';
 import { Photo } from './photos/entities/photo.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -24,9 +25,12 @@ import { Photo } from './photos/entities/photo.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [User, Album, Commentary, Photo],
-      // autoLoadEntities: true,
+      autoLoadEntities: true,
       synchronize: true,
       logging: false,
+    }),
+    MulterModule.register({
+      dest: './files'
     }),
     UsersModule,
     CommentsModule,
