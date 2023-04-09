@@ -16,8 +16,8 @@ import { log } from 'console';
  * * **update**         : Editing a user.
  * * **remove**         : Deleting a user account by his id.
  */
-@ApiTags('USERS') // cree une categorie USERS dans swagger UI
-@UseInterceptors(ClassSerializerInterceptor) // Ne renvoie pas les proprietes d'une entité marquées par @Exclude()
+@ApiTags('USERS') //Creates a USERS category in swagger UI.
+@UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
 @Controller('users')
 export class UsersController
 {

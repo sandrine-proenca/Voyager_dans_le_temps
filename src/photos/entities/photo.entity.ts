@@ -13,25 +13,29 @@ export class Photo extends BaseEntity {
     id: number
 
     @ApiProperty()
-    @Column({
-        type: "bytea",
-    })
+    @Column()
     photo: string;
 
     @ApiProperty()
     @Column()
     information: string;
 
+    @ApiProperty()
+    @Column()
+    mimeType: string;
+
+    
+
 
     
     /* Relations with other tables */
 
     @ApiProperty({ type: ()=> User})
-    @ManyToOne( ()=> User, (user) => user.photos)
+    @ManyToOne( ()=> User, (user) => user.photos, {eager: true})
     user: User
 
     @ApiProperty()
-    @ManyToOne( () => Album, (album) => album.photos)
+    @ManyToOne( () => Album, (album) => album.photos, {eager: true})
     album: Album;
 
     @ApiProperty()

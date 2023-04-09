@@ -70,6 +70,8 @@ $ nest g module auth
 
 $ nest g service auth
 
+$ nest g resource images
+
 ```
 
 ## upload an image

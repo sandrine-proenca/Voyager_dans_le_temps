@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
+import { Album } from "src/albums/entities/album.entity";
+import { User } from "src/users/entities/user.entity";
 
 export class CreatePhotoDto {
 
@@ -10,4 +12,10 @@ export class CreatePhotoDto {
     @ApiProperty()
     @IsString()
     information: string
+
+    @IsOptional()
+    user: User
+
+    @IsOptional()
+    album: Album
 }
