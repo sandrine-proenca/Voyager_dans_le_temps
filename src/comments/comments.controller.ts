@@ -1,34 +1,84 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, HttpException, HttpStatus, UseGuards, NotFoundException } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { UsersService } from 'src/users/users.service';
+import { PhotosService } from 'src/photos/photos.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(private readonly commentsService: CommentsService,
+    private readonly userService: UsersService,
+    private readonly photoService: PhotosService) {}
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
-  }
+  async create(@Body() createCommentDto: CreateCommentDto, @Request() req) {
+    const newComment = await this.commentsService.create(createCommentDto, req.user);
+    return {
+      statusCode: 201,
+      message: `The new comment is created.`,
+      data: newComment
+    };
+  };
+
+
 
   @Get()
-  findAll() {
-    return this.commentsService.findAll();
-  }
+  async findAll() {
+    const allComments = await this.commentsService.findAll();
+    if(!allComments){
+      throw new HttpException(`No comments found.`,HttpStatus.NOT_FOUND);
+    }
+    return {
+      statusCode: 200,
+      message: `List of all comments.`,
+      data: allComments
+    };
+  };
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const oneComment = await this.commentsService.findOne(+id);
+    if(!oneComment){
+      throw new HttpException(`No comments found.`,HttpStatus.NOT_FOUND);
+    }
+    return {
+      statusCode: 200,
+      message: `Comment display successful.`,
+      data: oneComment
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
-  }
+  async update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
+    const commentExist = await this.commentsService.findOne(+id);
+    if(!commentExist){
+      throw new HttpException(`No comments found.`,HttpStatus.NOT_FOUND);
+    };
+    const comment = await this.commentsService.update(+id, updateCommentDto);
+    return {
+      statusCode: 200,
+      message: `The changes in the comment have been taken into account.`,
+      data: comment
+    };
+  };
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
-  }
-}
+  async remove(@Param('id') id: string) {
+    const commentExist = await this.commentsService.findOne(+id);
+    if(!commentExist){
+      throw new HttpException(`No comments found.`,HttpStatus.NOT_FOUND);
+    };
+    const deletedComment = await this.commentsService.remove(+id);
+    if(deletedComment === null){
+      throw new NotFoundException();
+    };
+    return {
+      statusCode: 200,
+      message: `This commentary number ${id} is deleted.`,
+      data: deletedComment
+    };
+  };
+};

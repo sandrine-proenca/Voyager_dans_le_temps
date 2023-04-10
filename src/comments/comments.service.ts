@@ -2,11 +2,12 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Commentary } from './entities/comment.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class CommentsService
 {
-  async create(createCommentDto: CreateCommentDto)
+  async create(createCommentDto: CreateCommentDto, user: User)
   {
     try
     {
