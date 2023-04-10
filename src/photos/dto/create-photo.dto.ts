@@ -14,6 +14,9 @@ export class CreatePhotoDto {
     information: string
 
     @IsOptional()
+    mimeType: string;
+
+    @IsOptional()
     user: User
 
     @IsOptional()

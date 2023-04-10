@@ -25,19 +25,22 @@ export class PhotosController {
     async uploadFile(@UploadedFile() file: Express.Multer.File)
     {
       console.log(file);
-      const newImage = await this.photosService.create(file)
+      const newPhoto = await this.photosService.create(file)
       return {
         statusCode: 201,
         message: `Successful creation of a new upload`,
-        data: newImage
+        data: newPhoto
       };
     }
 
 
 
-  @Get(':fileId')
-  async seeUploadedFile(@Param('fileId') fileId, @Res() res): Promise<any> {
-    return res.findAll(fileId, { root: './uploads'});
+    @UseGuards(JwtAuthGuard)
+    @Get('upload')
+    @UseInterceptors(ClassSerializerInterceptor)
+  async findAllPhotos(){
+    const photos = await this.photosService.findAll();
+    return photos.map(photo => photo.save());
   }
 
   @Get(':id')
@@ -46,12 +49,23 @@ export class PhotosController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePhotoDto: UpdatePhotoDto) {
-    return this.photosService.update(+id, updatePhotoDto);
+  async update(@Param('id') id: string, @Body()  file: Express.Multer.File) {
+    const photo = await this.photosService.update(+id, file);
+    return {
+      statusCode: 200,
+      message: `Success of change.`,
+      data: photo
+    };
+    
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.photosService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const photo = await this.photosService.remove(+id);
+    return {
+      statusCode: 200,
+      message: `Deletion success.`,
+      data: photo
+    };
   }
 }

@@ -1,7 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { Photo } from './entities/photo.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Album } from 'src/albums/entities/album.entity';
 
 @Injectable()
 export class PhotosService
@@ -52,13 +54,41 @@ export class PhotosService
     return `This action returns a #${id} photo`;
   }
 
-  update(id: number, updatePhotoDto: UpdatePhotoDto)
+  async update(id: number, file: Express.Multer.File)
   {
-    return `This action updates a #${id} photo`;
+    const updatedPhoto = await Photo.findOneBy({id});
+    const user = await User.findOneBy({id});
+    const album = await Album.findOneBy({id})
+
+    updatedPhoto.photo = file.filename;
+    updatedPhoto.information = file.originalname;
+    updatedPhoto.mimeType = file.mimetype;
+    
+    if(!user){
+      throw new NotFoundException()
+    }
+    if(!album){
+      throw new NotFoundException()
+    }
+    if(updatedPhoto.id !== user.id){
+      throw new Error(`User with id ${user.id} is not authorized to update photo with id ${updatedPhoto.id}`);
+    }
+    if (!updatedPhoto){
+      throw new BadRequestException(`Photo not found`);
+    }
+
+    const photo = await updatedPhoto.save();
+    return photo;
+    
   }
 
-  remove(id: number)
+  async remove(id: number)
   {
-    return `This action removes a #${id} photo`;
+    const photo = await Photo.findOneBy({id});
+    if(!photo){
+      throw new BadRequestException(`Photo not found.`);
+    }
+    await photo.remove();
+    return photo;
   }
 }

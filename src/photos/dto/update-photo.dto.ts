@@ -5,11 +5,16 @@ import { User } from 'src/users/entities/user.entity';
 import { Album } from 'src/albums/entities/album.entity';
 
 export class UpdatePhotoDto extends PartialType(CreatePhotoDto) {
-    
+    @ApiProperty()
+    @IsString()
+    photo: string;
 
     @ApiProperty()
     @IsString()
-    information: string;
+    information: string
+
+    @IsOptional()
+    mimeType: string;
 
     @IsOptional()
     user: User

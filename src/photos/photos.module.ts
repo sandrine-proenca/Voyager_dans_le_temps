@@ -3,6 +3,7 @@ import { PhotosService } from './photos.service';
 import { PhotosController } from './photos.controller';
 import { UsersService } from 'src/users/users.service';
 import { MulterModule } from '@nestjs/platform-express';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { MulterModule } from '@nestjs/platform-express';
     }),
   ],
   controllers: [PhotosController],
-  providers: [PhotosService,UsersService]
+  providers: [PhotosService,UsersService,AlbumsService]
 })
 export class PhotosModule {}
