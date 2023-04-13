@@ -49,33 +49,30 @@ export class PhotosService
     }
   }
 
-  findOne(id: number)
+  async findOne(id: number)
   {
-    return `This action returns a #${id} photo`;
+    try
+    {
+      const photoExist = await Photo.findOneBy({ id });
+      /* console.log(photoExist); */
+      return photoExist
+      
+    }
+    catch (error)
+    {
+      throw new InternalServerErrorException();
+    }
   }
 
-  async update(id: number, file: Express.Multer.File)
+  async update(id: number, updatePhotoDto: UpdatePhotoDto, file: Express.Multer.File)
   {
     const updatedPhoto = await Photo.findOneBy({id});
-    const user = await User.findOneBy({id});
-    const album = await Album.findOneBy({id})
 
     updatedPhoto.photo = file.filename;
     updatedPhoto.information = file.originalname;
     updatedPhoto.mimeType = file.mimetype;
+    updatedPhoto.user = updatePhotoDto.user
     
-    if(!user){
-      throw new NotFoundException()
-    }
-    if(!album){
-      throw new NotFoundException()
-    }
-    if(updatedPhoto.id !== user.id){
-      throw new Error(`User with id ${user.id} is not authorized to update photo with id ${updatedPhoto.id}`);
-    }
-    if (!updatedPhoto){
-      throw new BadRequestException(`Photo not found`);
-    }
 
     const photo = await updatedPhoto.save();
     return photo;
@@ -84,10 +81,18 @@ export class PhotosService
 
   async remove(id: number)
   {
-    const photo = await Photo.findOneBy({id});
-    
-    await photo.remove();
-    
-    return photo;
+    try
+    {
+    const photo = await this.findOne(id);
+    if (photo)
+    {
+    return await photo.remove();
+    }
+    return null;
+  }
+  catch (error)
+  {
+    throw new InternalServerErrorException();
+  }
   }
 }
