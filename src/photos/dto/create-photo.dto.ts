@@ -1,24 +1,27 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
-import { Album } from "src/albums/entities/album.entity";
-import { User } from "src/users/entities/user.entity";
+import { IsNotEmpty,  IsString } from "class-validator";
 
 export class CreatePhotoDto {
 
     @ApiProperty()
+    @IsNotEmpty()
     @IsString()
     photo: string;
 
     @ApiProperty()
+    @IsNotEmpty()
     @IsString()
     information: string
 
-    @IsOptional()
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
     mimeType: string;
 
-    @IsOptional()
-    user: User
+    /* @IsOptional()
+    user: User */
 
-    @IsOptional()
-    album: Album
+    @ApiProperty()
+    @IsNotEmpty()
+    albumId: number;
 }

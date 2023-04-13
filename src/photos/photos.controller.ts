@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, Res, BadRequestException } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
@@ -8,6 +8,8 @@ import { AlbumsService } from 'src/albums/albums.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { imageFileFilter } from './middleware/imageFileFilter';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 
 
@@ -20,7 +22,18 @@ export class PhotosController {
 
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: `Add a new file` })
-    @UseInterceptors(FileInterceptor('file', {fileFilter:imageFileFilter}))//HTML form field file name and maximum number of photos (Nom du fichier du champs du formulaire HTML et nombre maximum de photos)
+    @UseInterceptors(FileInterceptor('file',  {
+      storage: diskStorage({  //Function that can be used with Multer returns an implemented storage engine to store photos locally.(Fonction utilisable avec multer retourne un moteur de stockage implémenté pour stocker les photos en local.)
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9); //Return a multer number specific to each photo.(Retourne un numéro multer propre à chaque photo.)
+          const ext = extname(file.originalname); //Extension of the original file.(Extension du fichier original.)
+          const filename = `${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        }
+      }),
+      fileFilter: imageFileFilter,
+    }))
     @Post('uploads')
     async uploadFile(@UploadedFile() file: Express.Multer.File)
     {
@@ -34,13 +47,12 @@ export class PhotosController {
     }
 
 
-
+    @UseInterceptors(FileInterceptor('file', {fileFilter:imageFileFilter}))
     @UseGuards(JwtAuthGuard)
     @Get('upload')
-    @UseInterceptors(ClassSerializerInterceptor)
   async findAllPhotos(){
     const photos = await this.photosService.findAll();
-    return photos.map(photo => photo.save());
+    return photos;
   }
 
   @Get(':id')
@@ -48,7 +60,11 @@ export class PhotosController {
     return this.photosService.findOne(+id);
   }
 
-  @Patch(':id')
+
+
+  @UseInterceptors(FileInterceptor('file', {fileFilter:imageFileFilter}))
+    @UseGuards(JwtAuthGuard)
+  @Patch('upload/:id')
   async update(@Param('id') id: string, @Body()  file: Express.Multer.File) {
     const photo = await this.photosService.update(+id, file);
     return {
@@ -59,9 +75,18 @@ export class PhotosController {
     
   }
 
-  @Delete(':id')
+
+  @UseInterceptors(FileInterceptor('file', {fileFilter:imageFileFilter}))
+    @UseGuards(JwtAuthGuard)
+  @Delete('upload')
   async remove(@Param('id') id: string) {
     const photo = await this.photosService.remove(+id);
+
+    if(!photo)
+    {
+      throw new BadRequestException(`Photo not found.`);
+    }
+
     return {
       statusCode: 200,
       message: `Deletion success.`,

@@ -85,10 +85,9 @@ export class PhotosService
   async remove(id: number)
   {
     const photo = await Photo.findOneBy({id});
-    if(!photo){
-      throw new BadRequestException(`Photo not found.`);
-    }
+    
     await photo.remove();
+    
     return photo;
   }
 }
