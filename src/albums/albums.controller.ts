@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, ClassSerializerInterceptor, HttpStatus } from '@nestjs/common';
+import { HttpException, NotFoundException } from '@nestjs/common/exceptions';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { AlbumsService } from './albums.service';
@@ -9,7 +9,8 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
   /** Création d'un nouvel album nécessite :
    * * 
    */
-  @UseGuards(JwtAuthGuard) // doit être connecté/enregistré
+@UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+@UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
 @Controller('albums')
 export class AlbumsController {
   constructor(
@@ -18,9 +19,24 @@ export class AlbumsController {
 
 
   @Post()
-  async create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumsService.create(createAlbumDto);
-  }
+  async create(@Body() createAlbumDto: CreateAlbumDto, @Request() req) {
+    /* console.log('testcreateAlbumDto :',createAlbumDto); */
+    const albumExist = await this.albumsService.findAlbumAndUser(req.user.id, createAlbumDto.name);
+    /* console.log(albumExist); */
+    
+    if(albumExist) {
+      throw new HttpException(`This album already exist.`, HttpStatus.BAD_REQUEST);
+    }
+    const newAlbum = await this.albumsService.create(createAlbumDto, req.user);
+    /* console.log(`---newAlbum controller--->`, newAlbum); */
+    
+    
+    return {
+      statusCode: 201,
+      message: `This album is created.`,
+      data: newAlbum
+    };
+  };
 
   @Get()
   async findAll() {
@@ -32,16 +48,19 @@ export class AlbumsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const oneAlbum = await this.albumsService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    const oneAlbum = await this.albumsService.findAlbumById(id);
     if(!oneAlbum){
       throw new NotFoundException(`Album with id ${id} not found.`);
     }
-    return oneAlbum;
+    return {
+      statusCode: 200,
+      message: `Album with id ${id} is found.`,
+      data: oneAlbum};
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  async update(@Param('id') id: number, @Body() updateAlbumDto: UpdateAlbumDto) {
     const albumExist = await this.findOne(id);
     if (!albumExist){
       throw new NotFoundException(`Album with id ${id} not found.`);
@@ -51,7 +70,7 @@ export class AlbumsController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: number) {
     const albumExist = await this.findOne(id);
     if (!albumExist){
       throw new NotFoundException(`Album with id ${id} not found.`);

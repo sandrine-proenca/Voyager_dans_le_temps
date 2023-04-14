@@ -2,16 +2,26 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AlbumsService
 {
   /* Create an album in the database */
-  async create(createAlbumDto: CreateAlbumDto)
+  async create(createAlbumDto: CreateAlbumDto, user: User)
   {
     try
     {
-      return await Album.create({ ...createAlbumDto }).save();
+      /* console.log(`---createAlbumDto service--->`, createAlbumDto); */
+
+      const newAlbum = await Album.create({ ...createAlbumDto });
+      /* console.log(`newAlbum 1 service--->`, newAlbum); */
+
+      delete user.password;
+      newAlbum.users = [ user ];
+      /* console.log(`newAlbum 2 service--->`, newAlbum); */
+
+      return await newAlbum.save();
     }
     catch (error)
     {
@@ -20,24 +30,24 @@ export class AlbumsService
   }
 
   /* Retrieving all albums in the database */
-  async findAll()
+  async findAll(): Promise<Album[]>
   {
     try
     {
-    return await Album.find();
-  }
-  catch (error)
-  {
-    throw new InternalServerErrorException();
-  }
+      return await Album.find();
+    }
+    catch (error)
+    {
+      throw new InternalServerErrorException();
+    }
   }
 
   /*  Retrieving an album in the database by his id */
-  async findOne(id: number)
+  async findAlbumById(id: number)
   {
     try
     {
-      return await Album.findOneBy({ id })
+      return await Album.findOne({ relations: { users: true }, where: { id } })
     }
     catch (error)
     {
@@ -47,12 +57,18 @@ export class AlbumsService
 
   async update(id: number, updateAlbumDto: UpdateAlbumDto)
   {
-    const updatedAlbum = await Album.findOneBy({id});
-    if (!updatedAlbum) throw new NotFoundException();
-    updatedAlbum.name = updateAlbumDto.name;
-    updatedAlbum.users = updateAlbumDto.users;
     try
     {
+    //Find the album by its id.
+    const updatedAlbum = await Album.findOneBy({ id });
+    if (!updatedAlbum) 
+    { 
+      throw new NotFoundException() 
+    };
+    
+    updatedAlbum.name = updateAlbumDto.name;
+    updatedAlbum.users = updateAlbumDto.users;
+    
       return await Album.save(updatedAlbum);
     }
     catch (error)
@@ -65,7 +81,7 @@ export class AlbumsService
   {
     try
     {
-      const album = await Album.findOneBy({id});
+      const album = await Album.findOneBy({ id });
       if (album)
       {
         return await album.remove();
@@ -76,5 +92,14 @@ export class AlbumsService
     {
       throw new InternalServerErrorException();
     }
+  }
+
+  /** 
+* @method findAlbumAndUser:
+* * A method for returning data from a user relationship and an album.
+*/
+  async findAlbumAndUser(userId: number, name: string)
+  {
+    return await Album.findOne({ where: { users: { id: userId }, name: name } });
   }
 }
