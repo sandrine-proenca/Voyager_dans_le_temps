@@ -9,9 +9,7 @@ export class CreateCommentDto
     @IsString()
     commentary: string;
 
+    @ApiProperty()
     @IsOptional()
-    user: User
-
-    @IsOptional()
-    photo: Photo
+    photoId: number;
 }

@@ -1,21 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, HttpException, HttpStatus, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, HttpException, HttpStatus, UseGuards, NotFoundException, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/users/users.service';
 import { PhotosService } from 'src/photos/photos.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @UseGuards(JwtAuthGuard)
-@Controller('comments')
+@UseInterceptors(ClassSerializerInterceptor)
+@ApiTags('COMMENTARIES')
+@Controller('commentaries')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService,
     private readonly userService: UsersService,
     private readonly photoService: PhotosService) {}
-
+  @ApiBody({type: CreateCommentDto})
+  @ApiOperation({summary: `Add a commentary to one photo.`})
+  @ApiResponse({status: 201, description:`Comment posted`})
   @Post()
-  async create(@Body() createCommentDto: CreateCommentDto, @Request() req) {
-    const newComment = await this.commentsService.create(createCommentDto, req.user);
+  async create(@Body() createCommentDto: CreateCommentDto, @GetUser() user: User) {
+    const newComment = await this.commentsService.create(createCommentDto, user);
+    /* console.log(newComment); */
+    
     return {
       statusCode: 201,
       message: `The new comment is created.`,
@@ -38,6 +47,8 @@ export class CommentsController {
     };
   };
 
+
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const oneComment = await this.commentsService.findOne(+id);
@@ -51,6 +62,8 @@ export class CommentsController {
     }
   }
 
+
+  
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
     const commentExist = await this.commentsService.findOne(+id);

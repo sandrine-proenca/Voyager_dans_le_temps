@@ -25,5 +25,5 @@ export class Commentary extends BaseEntity {
 
     @ApiProperty({ type: ()=> Photo})
     @ManyToOne( ()=> Photo, (photo) => photo.commentaries, { nullable: false, onDelete: 'CASCADE'})
-    photo: Photo
+    photo: Photo;
 }

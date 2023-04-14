@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { Photo } from './entities/photo.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Album } from 'src/albums/entities/album.entity';
+import * as fs from 'fs';
+
 
 @Injectable()
 export class PhotosService
@@ -56,7 +55,7 @@ export class PhotosService
       const photoExist = await Photo.findOneBy({ id });
       /* console.log(photoExist); */
       return photoExist
-      
+
     }
     catch (error)
     {
@@ -66,33 +65,69 @@ export class PhotosService
 
   async update(id: number, updatePhotoDto: UpdatePhotoDto, file: Express.Multer.File)
   {
-    const updatedPhoto = await Photo.findOneBy({id});
+    try
+    {
+      const updatedPhoto = await Photo.findOneBy({ id });
+      if (updatedPhoto)
+      {
+        //Delete the photo file in 'uploads'.
+        const path = `${process.cwd()}/uploads/${updatedPhoto.photo}`;
+        fs.unlink(path, (err) =>
+        {
+          if (err)
+          {
+            return console.log(err);
+          }
+          console.log('file deleted successfully');
+        })
 
-    updatedPhoto.photo = file.filename;
-    updatedPhoto.information = file.originalname;
-    updatedPhoto.mimeType = file.mimetype;
-    updatedPhoto.user = updatePhotoDto.user
-    
+        updatedPhoto.photo = file.filename;
+        updatedPhoto.information = file.originalname;
+        updatedPhoto.mimeType = file.mimetype;
+        updatedPhoto.user = updatePhotoDto.user
 
-    const photo = await updatedPhoto.save();
-    return photo;
-    
+
+        const photo = await updatedPhoto.save();
+        return photo;
+      }
+      return null;
+    }
+    catch (error)
+    {
+      console.log(error);
+
+      throw new InternalServerErrorException();
+    }
+
   }
+  
 
   async remove(id: number)
   {
     try
     {
-    const photo = await this.findOne(id);
-    if (photo)
-    {
-    return await photo.remove();
+      const photo = await this.findOne(id);
+      if (photo)
+      {
+        //Delete the photo file in 'uploads'.
+        const path = `${process.cwd()}/uploads/${photo.photo}`;
+        fs.unlink(path, (err) =>
+        {
+          if (err)
+          {
+            return console.log(err);
+          }
+          console.log('file deleted successfully');
+        })
+        return await photo.remove();
+      }
+      return null;
     }
-    return null;
-  }
-  catch (error)
-  {
-    throw new InternalServerErrorException();
-  }
+    catch (error)
+    {
+      console.log(error);
+
+      throw new InternalServerErrorException();
+    }
   }
 }

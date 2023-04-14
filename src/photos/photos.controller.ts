@@ -9,7 +9,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { imageFileFilter } from './middleware/imageFileFilter';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import path, { extname } from 'path';
 import { Photo } from './entities/photo.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Album } from 'src/albums/entities/album.entity';
@@ -130,12 +130,13 @@ async findAllPhotos(){
     }),
     fileFilter: imageFileFilter,
   })) */
-  @UseInterceptors(FileInterceptor('file', { fileFilter: imageFileFilter }))
+  /* @UseInterceptors(FileInterceptor('file', { fileFilter: imageFileFilter })) */
   @Delete(':id')
   async remove(@Param('id') id: number)
   {
+    
+    //Delete the photo in the DDB.
     const deletedPhoto = await this.photosService.remove(id);
-
 
     return {
       statusCode: 200,
