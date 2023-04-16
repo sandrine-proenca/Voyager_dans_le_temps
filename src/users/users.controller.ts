@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, ConflictException, HttpException, HttpStatus, BadRequestException, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, HttpStatus, BadRequestException, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';import * as bcrypt from 'bcrypt';
+import { ApiResponse, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger'; import * as bcrypt from 'bcrypt';
 import { UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { log } from 'console';
 
 
 /**
@@ -17,16 +16,15 @@ import { log } from 'console';
  * * **remove**         : Deleting a user account by his id.
  */
 @ApiTags('USERS') //Creates a USERS category in swagger UI.
-@UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
 @Controller('users')
 export class UsersController
 {
   constructor(private readonly usersService: UsersService) { }
 
 
-  @ApiTags(`Sign Up`)
+  @ApiBody({ type: CreateUserDto })
   @ApiOperation({ summary: `Creating a user account` })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 201, description: 'User is created.' })
   @Post(`register`)
   async create(@Body() createUserDto: CreateUserDto)
   {
@@ -40,17 +38,18 @@ export class UsersController
     }
 
     const existingEmail = await this.usersService.findUserByEmail(createUserDto.email);
-    if(existingEmail){
-      throw new HttpException(`This email already exists, please modify it.`,HttpStatus.CONFLICT);
+    if (existingEmail)
+    {
+      throw new HttpException(`This email already exists, please modify it.`, HttpStatus.CONFLICT);
     }
 
     // Hashage du password
     const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
-    
+
 
     // Création du user
     const user = await this.usersService.create(createUserDto, hash);
-    
+
 
     return {
       statusCode: 201,
@@ -60,8 +59,9 @@ export class UsersController
   }
 
 
-  @UseGuards(JwtAuthGuard) // verifie que le token est valide
-  @ApiOperation({ summary: `Retrieving all users` })
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  @ApiOperation({ summary: `Retrieving all users` }) @ApiResponse({ status: 200, description: 'Search for all users are found.' })
   @Get()
   async findAll()
   {
@@ -75,8 +75,9 @@ export class UsersController
   }
 
 
-  @UseGuards(JwtAuthGuard) // verifie que le token est valide
-  @ApiOperation({ summary: `Retrieving a user by id` })
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  @ApiOperation({ summary: `Retrieving a user by id` }) @ApiResponse({ status: 200, description: 'Search for a user by id is found.' })
   @Get(':id')
   async findOne(@Param('id') id: number)
   {
@@ -93,8 +94,10 @@ export class UsersController
   }
 
 
-  @UseGuards(JwtAuthGuard) // verifie que le token est valide
-  @ApiOperation({ summary: `Editing a user by his id` })
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  @ApiBody({ type: UpdateUserDto })
+  @ApiOperation({ summary: `Editing a user by his id` }) @ApiResponse({ status: 200, description: 'Your user has been modified' })
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto)
   {
@@ -137,8 +140,9 @@ export class UsersController
 
   /** Deleting a user by its id for the admin or family's admin. */
   @UseGuards(JwtAuthGuard) // verifie que le token est valide
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiOperation({ summary: ` Deleting a user account by his id ` })
-  @ApiResponse({ status: 200, description: `Account deleted` })
+  @ApiResponse({ status: 200, description: `Account has been deleted` })
   @Delete(':id')
   async removeUser(@Param('id') id: string)
   {

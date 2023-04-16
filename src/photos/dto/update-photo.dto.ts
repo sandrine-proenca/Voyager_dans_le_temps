@@ -1,8 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 import { CreatePhotoDto } from './create-photo.dto';
-import { User } from 'src/users/entities/user.entity';
-import { Album } from 'src/albums/entities/album.entity';
 
 export class UpdatePhotoDto extends PartialType(CreatePhotoDto) {
     @ApiProperty()
@@ -19,9 +17,11 @@ export class UpdatePhotoDto extends PartialType(CreatePhotoDto) {
 
     @ApiProperty()
     @IsOptional()
-    user: User
+    @IsInt()
+    albumId: number;
 
     @ApiProperty()
     @IsOptional()
-    album: Album
+    @IsInt()
+    userId: number;
 }

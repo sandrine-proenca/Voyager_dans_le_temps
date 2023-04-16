@@ -8,35 +8,51 @@ import { Photo } from 'src/photos/entities/photo.entity';
 @Injectable()
 export class CommentsService
 {
-  async create(createCommentDto: CreateCommentDto, user: User): Promise <Commentary | null>
-  {
-    const photo = await Photo.findOneBy({
-      id: createCommentDto.photoId
-    })
-    if(photo !== null){
-      const newComment = new Commentary();
-      newComment.commentary = createCommentDto.commentary;
-      newComment.photo = photo;
-      newComment.user = user;
-      await newComment.save();
-      return await Commentary.findOne({
-        relations: {photo: true, user: true},
-        select: {
-          id: true,
-          commentary: true,
-          photo: { id: true},
-          user: { id: true},
-        },
-        where: {id: newComment.id}
-      })
-    }
 
-    return null;
-    
+  async createComment ( createCommentDto: CreateCommentDto, user: User)
+  {
+    const response = Commentary.create ({ ...createCommentDto });
+    delete user.password;
+    response.user.id = user.id;
+    return await response.save();
   }
 
 
-  async findAll()
+  async findAll(): Promise<Commentary[]> {
+    return await Commentary.find();
+  }
+
+
+
+ /*  async create(createCommentDto: CreateCommentDto,
+    user: User): Promise <Commentary | undefined>
+  {console.log('Test');
+  
+    const photo = await Photo.findOneBy({ id: createCommentDto.photoId})
+    console.log(photo);
+    
+    if(photo !== null){
+      const comment = new Commentary();
+      comment.commentary = createCommentDto.commentary;
+      comment.photo = photo;
+      comment.user = user;
+      await comment.save();
+      return await Commentary.findOne({
+        relations: { photo: true, user: true},
+        select: {
+          id: true,
+          commentary: true,
+          photo: { id: true },
+          user: { id: true }
+        },
+        where: { id: comment.id }
+      });
+    }
+    return undefined;
+  }
+
+
+  async findAll(): Promise<Commentary[] | undefined>
   {
     try
     {
@@ -48,11 +64,22 @@ export class CommentsService
     }
   }
 
-  async findOne(id: number)
+  async findOneCommentary(id: number): Promise<Commentary | undefined>
   {
+    console.log(`---test-service-avant-try--->`);
+    
     try
     {
-      return await Commentary.findOneBy({ id })
+      return await Commentary.findOne({
+        relations: { photo: true, user: true},
+        select: {
+          id: true,
+          commentary: true,
+          photo: { id: true },
+          user: { id: true }
+        },
+        where: { id }
+      });
     }
     catch (error)
     {
@@ -60,15 +87,28 @@ export class CommentsService
     }
   }
 
-  async update(id: number, updateCommentDto: UpdateCommentDto)
+
+
+  async update(id: number, updateCommentDto: UpdateCommentDto): Promise<Commentary | undefined>
   {
-    const updatedCommentary = await Commentary.findOneBy({id});
-
-    if (!updatedCommentary) throw new NotFoundException();
-    updatedCommentary.commentary = updateCommentDto.commentary;
-
     try 
     {
+    const updatedCommentary = await Commentary.findOne({
+      relations: { photo: true, user: true},
+      select: {
+        id: true,
+        commentary: true,
+        photo: { id: true },
+        user: { id: true }
+      },
+      where: { id:id }
+    });
+
+    if (!updatedCommentary)
+    {
+      throw new NotFoundException()
+    };
+    updatedCommentary.commentary = updateCommentDto.commentary;
       return await Commentary.save(updatedCommentary);
     }
     catch (error)
@@ -77,11 +117,22 @@ export class CommentsService
     }
   }
 
-  async remove(id: number)
+
+
+  async deleteCommentary(id: number): Promise<Commentary | undefined>
   {
     try
     {
-      const commentary = await this.findOne(id);
+      const commentary = await Commentary.findOne({
+        relations: { photo: true, user: true},
+        select: {
+          id: true,
+          commentary: true,
+          photo: { id: true },
+          user: { id: true }
+        },
+        where: { id:id }
+      });
       if (commentary){
         return await commentary.remove();
       }
@@ -91,5 +142,5 @@ export class CommentsService
     {
       throw new InternalServerErrorException();
     }
-  }
+  } */
 }

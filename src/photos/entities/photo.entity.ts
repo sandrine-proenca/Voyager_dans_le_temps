@@ -34,11 +34,11 @@ export class Photo extends BaseEntity {
     @ManyToOne( ()=> User, (user) => user.photos, {eager: true})
     user: User
 
-    @ApiProperty()
+    @ApiProperty({ type: () => Album })
     @ManyToOne( () => Album, (album) => album.photos, {eager: true})
     album: Album;
 
-    @ApiProperty()
+    @ApiProperty({ type: () => Commentary })
     @OneToMany( () => Commentary, (commentary) => commentary.photo)
     commentaries: Commentary[];
 }

@@ -83,11 +83,11 @@ export class User extends BaseEntity{
     @JoinTable()
     albums: Album[]
 
-    @ApiProperty()
+    @ApiProperty({ type: () => Commentary })
     @OneToMany( () => Commentary, (commentary) => commentary.user)
     commentaries: Commentary[]
 
-    @ApiProperty()
+    @ApiProperty({ type: () => Photo })
     @OneToMany( () => Photo, (photo) => photo.user)
     photos: Photo[]
 }

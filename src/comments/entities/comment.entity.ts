@@ -13,7 +13,7 @@ export class Commentary extends BaseEntity {
 
     @ApiProperty()
     @Column()
-    commentary: string;
+    content: string;
 
 
 

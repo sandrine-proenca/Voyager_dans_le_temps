@@ -1,22 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, Res, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, BadRequestException } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/users/users.service';
 import { AlbumsService } from 'src/albums/albums.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { imageFileFilter } from './middleware/imageFileFilter';
 import { diskStorage } from 'multer';
-import path, { extname } from 'path';
-import { Photo } from './entities/photo.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Album } from 'src/albums/entities/album.entity';
+import { extname } from 'path';
 
 
 
-@UseGuards(JwtAuthGuard)
+
 @ApiTags('PHOTOS') // Create a PHOTOS category in swagger UI.
 @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
 @Controller('photos')
@@ -27,7 +24,11 @@ export class PhotosController
     private readonly userService: UsersService,
     private readonly albumService: AlbumsService) { }
 
-  @ApiOperation({ summary: `Add a new file` })
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  @ApiBody({ type: CreatePhotoDto })
+  @ApiOperation({ summary: `Add a new photo` })
+  @ApiResponse({ status: 201, description: `Photo posted` })
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({  //Function that can be used with Multer returns an implemented storage engine to store photos locally.(Fonction utilisable avec multer retourne un moteur de stockage implémenté pour stocker les photos en local.)
       destination: './uploads',
@@ -54,6 +55,8 @@ export class PhotosController
   }
 
 
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Get()
 async findAllPhotos(){
   const photos = await this.photosService.findAll();
@@ -62,6 +65,8 @@ async findAllPhotos(){
 
 
 
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Get(':id')
   async findOnePhoto(@Param('id') id: string)
   {
@@ -71,7 +76,11 @@ async findAllPhotos(){
 
 
 
-
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()@ApiBody({ type: CreatePhotoDto })
+  @ApiOperation({ summary: `Change a photo.` })
+  @ApiBody({ type: UpdatePhotoDto })
+  @ApiResponse({ status: 200, description: `The photo is changed.` })
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({  //Function that can be used with Multer returns an implemented storage engine to store photos locally.(Fonction utilisable avec multer retourne un moteur de stockage implémenté pour stocker les photos en local.)
       destination: './uploads',
@@ -94,25 +103,6 @@ async findAllPhotos(){
       throw new BadRequestException(`Photo not found`);
     }
 
-    /* const user = await User.findOneBy({ id });
-    console.log(user);
-    
-    if (!user)
-    {
-      throw new NotFoundException()
-    } */
-
-    /* const album = await Album.findOneBy({ id });
-    if (!album)
-    {
-      throw new NotFoundException()
-    } */
-    
-    /* if (photoExist.id !== user.id)
-    {
-      throw new Error(`User with id ${user.id} is not authorized to update photo with id ${photoExist.id}`);
-    } */
-
     const photo = await this.photosService.update(id, updatePhotoDto, file);
 
     return {
@@ -124,19 +114,13 @@ async findAllPhotos(){
   }
 
 
-  /* @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads'
-    }),
-    fileFilter: imageFileFilter,
-  })) */
-  /* @UseInterceptors(FileInterceptor('file', { fileFilter: imageFileFilter })) */
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Delete(':id')
   async remove(@Param('id') id: number)
   {
-    
-    //Delete the photo in the DDB.
     const deletedPhoto = await this.photosService.remove(id);
+
 
     return {
       statusCode: 200,

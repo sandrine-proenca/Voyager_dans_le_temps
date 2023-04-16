@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { Photo } from './entities/photo.entity';
 import * as fs from 'fs';
@@ -7,17 +7,7 @@ import * as fs from 'fs';
 @Injectable()
 export class PhotosService
 {
-  /* async create(createPhotoDto: CreatePhotoDto) {
-    const newPhoto = new Photo();
-
-    newPhoto.photo = createPhotoDto.photo;
-    newPhoto.information = createPhotoDto.information;
-    newPhoto.user = createPhotoDto.user;
-    newPhoto.album = createPhotoDto.album;
-    await newPhoto.save();
-    return newPhoto;
-  } */
-  async create(file: Express.Multer.File): Promise<Photo>
+  async create(file: Express.Multer.File): Promise<Photo | undefined>
   {
     try
     {
@@ -84,7 +74,6 @@ export class PhotosService
         updatedPhoto.photo = file.filename;
         updatedPhoto.information = file.originalname;
         updatedPhoto.mimeType = file.mimetype;
-        updatedPhoto.user = updatePhotoDto.user
 
 
         const photo = await updatedPhoto.save();

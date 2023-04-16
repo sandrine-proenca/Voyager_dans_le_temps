@@ -19,7 +19,7 @@ export class Album extends BaseEntity {
     
     /* Relations with other tables */
 
-    @ApiProperty()
+    @ApiProperty({ type: () => Photo })
     @OneToMany( () => Photo, (photo) => photo.album)
     photos: Photo[]
 

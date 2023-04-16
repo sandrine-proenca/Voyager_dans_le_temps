@@ -1,15 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsObject, IsOptional, IsString, Length } from "class-validator";
 import { Photo } from "src/photos/entities/photo.entity";
-import { User } from "src/users/entities/user.entity";
 
 export class CreateCommentDto
 {
     @ApiProperty()
     @IsString()
-    commentary: string;
+    @IsNotEmpty()
+    @Length(1,7000)
+    content: string;
+
+    /* @ApiProperty()
+    @IsObject()
+    @IsNotEmpty()
+    photo: Photo */
 
     @ApiProperty()
     @IsOptional()
+    @IsInt()
     photoId: number;
+
 }
