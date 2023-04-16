@@ -1,9 +1,139 @@
-<mxfile host="app.diagrams.net" modified="2023-04-16T07:35:26.854Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" version="21.1.7" etag="fQPNKnMLJaQ2cdfNP-q_" type="github">
+<mxfile host="app.diagrams.net" modified="2023-04-16T08:16:18.307Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" etag="ffWHMvoqs1IWutaeObAr" version="21.1.7" type="github">
   <diagram name="Page-1" id="HtQVQfZ8TFPf_YTs3sdP">
-    <mxGraphModel>
+    <mxGraphModel dx="3625" dy="2278" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="583" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="s9opVT_vMAjenNTDfQ4--1" value="Utilisateur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-51" y="429.5" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--2" value="Administrateur d&#39;un album" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-51" y="-152" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--3" value="Administrateur" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-51" y="-553" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--4" value="Visualiser toutes les photos d&#39;un album" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="159" y="397" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--6" value="Visualiser une photo" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="332" y="269" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--7" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="s9opVT_vMAjenNTDfQ4--4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-9" y="459.5" as="sourcePoint" />
+            <mxPoint x="233" y="507.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--8" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--6" target="s9opVT_vMAjenNTDfQ4--4">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="172" y="530.5" as="sourcePoint" />
+            <mxPoint x="332" y="530.5" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--11" value="Créer une photo" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="249" y="646.5" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--12" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=1;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--11" target="s9opVT_vMAjenNTDfQ4--4">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="172" y="779.5" as="sourcePoint" />
+            <mxPoint x="307" y="663.5" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--13" value="Modifier une photo" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="587" y="366.5" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--14" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--13" target="s9opVT_vMAjenNTDfQ4--6">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="341" y="385.8" as="sourcePoint" />
+            <mxPoint x="638.360532887704" y="294.502373021393" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--15" value="Supprimer une photo" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="414" y="487.5" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--16" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--15" target="s9opVT_vMAjenNTDfQ4--6">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="347" y="627" as="sourcePoint" />
+            <mxPoint x="529.6394671122962" y="532.7023730213928" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--17" value="S&#39;authentifier" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="89" y="562.5" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--20" value="Include" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--4" target="s9opVT_vMAjenNTDfQ4--17">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="178" y="398.5" as="sourcePoint" />
+            <mxPoint x="338" y="398.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--23" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="s9opVT_vMAjenNTDfQ4--2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-36" y="-464" as="sourcePoint" />
+            <mxPoint x="-36" y="-182" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--24" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="s9opVT_vMAjenNTDfQ4--1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-37" y="-52" as="sourcePoint" />
+            <mxPoint x="-37" y="263" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--25" value="Visualiser un album" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="169" y="-182.5" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--26" value="" style="endArrow=classic;html=1;rounded=0;fontSize=12;startSize=8;endSize=8;curved=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="s9opVT_vMAjenNTDfQ4--25">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="45" y="-122" as="sourcePoint" />
+            <mxPoint x="287" y="-74" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--27" value="Créer un album" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="338" y="-30" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--28" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=0.562;entryY=1.034;entryDx=0;entryDy=0;exitX=0;exitY=0;exitDx=0;exitDy=0;entryPerimeter=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--27" target="s9opVT_vMAjenNTDfQ4--25">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="261" y="103" as="sourcePoint" />
+            <mxPoint x="396" y="-176" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--29" value="S&#39;authentifier" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="89" y="-22" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--30" value="Include" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="s9opVT_vMAjenNTDfQ4--29" source="s9opVT_vMAjenNTDfQ4--25">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="184" y="-84" as="sourcePoint" />
+            <mxPoint x="338" y="-186" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--31" value="Modifier un album" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="474" y="-316" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--32" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=1;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--31" target="s9opVT_vMAjenNTDfQ4--25">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="406" y="-249.7" as="sourcePoint" />
+            <mxPoint x="570" y="-306" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--33" value="Supprimer un album" style="ellipse;whiteSpace=wrap;html=1;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="479" y="-148" width="173" height="121" as="geometry" />
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--34" value="Extend" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;fontSize=12;curved=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s9opVT_vMAjenNTDfQ4--33" target="s9opVT_vMAjenNTDfQ4--25">
+          <mxGeometry x="0.0104" y="1" width="160" relative="1" as="geometry">
+            <mxPoint x="412" y="-8.5" as="sourcePoint" />
+            <mxPoint x="484" y="-246" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s9opVT_vMAjenNTDfQ4--35" value="UseCase : Voyager dans le temps" style="html=1;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-53" y="-704" width="624.5" height="72" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
