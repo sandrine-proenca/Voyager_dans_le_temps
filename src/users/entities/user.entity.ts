@@ -5,6 +5,7 @@ import { Commentary } from "src/comments/entities/comment.entity";
 import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
 import { Album } from "src/albums/entities/album.entity";
 import { Photo } from "src/photos/entities/photo.entity";
+import { Length } from "class-validator";
 
 /*User's table */
 @Entity('users')
@@ -65,16 +66,20 @@ export class User extends BaseEntity{
 
     @ApiProperty()
     @Column()
+    @Length(1,7000)
     myself: string
 
     @ApiProperty()
     @Column()
+    @Length(1,7000)
     travel: string
 
     @ApiProperty()
     @Column()
+    @Length(1,7000)
     anecdote: string
 
+    
 
     /* Relations with other tables */
 

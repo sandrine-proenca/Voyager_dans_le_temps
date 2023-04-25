@@ -9,7 +9,7 @@ import { Photo } from 'src/photos/entities/photo.entity';
 export class CommentsService
 {
 
-  async createComment ( createCommentDto: CreateCommentDto, user: User)
+  /* async createComment ( createCommentDto: CreateCommentDto, user: User)
   {
     const response = Commentary.create ({ ...createCommentDto });
     delete user.password;
@@ -20,11 +20,11 @@ export class CommentsService
 
   async findAll(): Promise<Commentary[]> {
     return await Commentary.find();
-  }
+  } */
 
 
 
- /*  async create(createCommentDto: CreateCommentDto,
+  async create(createCommentDto: CreateCommentDto,
     user: User): Promise <Commentary | undefined>
   {console.log('Test');
   
@@ -33,7 +33,7 @@ export class CommentsService
     
     if(photo !== null){
       const comment = new Commentary();
-      comment.commentary = createCommentDto.commentary;
+      comment.content = createCommentDto.content;
       comment.photo = photo;
       comment.user = user;
       await comment.save();
@@ -41,7 +41,7 @@ export class CommentsService
         relations: { photo: true, user: true},
         select: {
           id: true,
-          commentary: true,
+          content: true,
           photo: { id: true },
           user: { id: true }
         },
@@ -74,7 +74,7 @@ export class CommentsService
         relations: { photo: true, user: true},
         select: {
           id: true,
-          commentary: true,
+          content: true,
           photo: { id: true },
           user: { id: true }
         },
@@ -97,7 +97,7 @@ export class CommentsService
       relations: { photo: true, user: true},
       select: {
         id: true,
-        commentary: true,
+        content: true,
         photo: { id: true },
         user: { id: true }
       },
@@ -108,7 +108,7 @@ export class CommentsService
     {
       throw new NotFoundException()
     };
-    updatedCommentary.commentary = updateCommentDto.commentary;
+    updatedCommentary.content = updateCommentDto.content;
       return await Commentary.save(updatedCommentary);
     }
     catch (error)
@@ -127,7 +127,7 @@ export class CommentsService
         relations: { photo: true, user: true},
         select: {
           id: true,
-          commentary: true,
+          content: true,
           photo: { id: true },
           user: { id: true }
         },
@@ -142,5 +142,5 @@ export class CommentsService
     {
       throw new InternalServerErrorException();
     }
-  } */
+  }
 }

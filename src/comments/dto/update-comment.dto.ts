@@ -11,7 +11,6 @@ export class UpdateCommentDto extends PartialType(CreateCommentDto)
     content: string;
     
     @ApiProperty()
-    @IsObject()
     @IsNotEmpty()
     photo: Photo
 

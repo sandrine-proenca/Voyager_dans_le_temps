@@ -20,7 +20,7 @@ export class CommentsController
 
 
 
-    @ApiBody({ type: CreateCommentDto })
+    /* @ApiBody({ type: CreateCommentDto })
     @ApiOperation({ summary: "Ajout d'un commentaire sur topic" })
     @ApiResponse({ status: 201, description: 'Commentaire posté' })
     @Post()
@@ -46,13 +46,13 @@ export class CommentsController
         data: response,
         message: "Liste de tous les commentaires"
       }
-    }
+    } */
 
 
 
 
 
- /*  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiBody({ type: CreateCommentDto })
   @ApiOperation({ summary: `Add a commentary to one photo.` })
@@ -61,8 +61,14 @@ export class CommentsController
   async create(@Body() createCommentDto: CreateCommentDto, @Request() req
     )
     // @GetUser() user:User
-  {
-    console.log('Test controller');
+  {const newComment = await this.commentsService.create(createCommentDto, req.user);
+    return {
+      statusCode: 201,
+      data: newComment,
+      message: "votre commentaire a bien été ajouté"
+    }
+  }
+    /* console.log('Test controller');
 
     return {
       message: `Comment is valide`,
@@ -70,7 +76,7 @@ export class CommentsController
     }
 
     
-  };
+  }; */
 
 
 
@@ -174,5 +180,5 @@ export class CommentsController
       message: `This commentary number ${id} is deleted.`,
       data: deletedComment
     };
-  }; */
+  };
 };

@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Length } from "class-validator";
 import { Album } from "src/albums/entities/album.entity";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { User } from "src/users/entities/user.entity";
@@ -18,6 +19,7 @@ export class Photo extends BaseEntity {
 
     @ApiProperty()
     @Column()
+    @Length(1,7000)
     information: string;
 
     @ApiProperty()
