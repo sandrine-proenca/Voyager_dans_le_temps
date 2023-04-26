@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiResponse, ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger'; import * as bcrypt from 'bcrypt';
 import { UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { GetUser } from 'src/auth/get-user.decorator';
 
 
 /**
@@ -98,10 +99,11 @@ export class UsersController
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiBody({ type: UpdateUserDto })
   @ApiOperation({ summary: `Editing a user by his id` }) @ApiResponse({ status: 200, description: 'Your user has been modified' })
-  @Patch(':id')
-  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto)
+  @Patch()
+  async update(@Body() updateUserDto: UpdateUserDto, @GetUser() user)
   {
-    const updatedUser = await this.usersService.update(id, updateUserDto);
+    const updatedUser = await this.usersService.update(user.userId, updateUserDto);
+console.log(updatedUser);
 
     if (!updatedUser)
     {

@@ -82,6 +82,7 @@ export class UsersService
   async update(id: number, updateUserDto: UpdateUserDto)
   {
     const updateUser = await User.findOneBy({ id });
+console.log(id);
 
     if (!updateUser) throw new NotFoundException();
 

@@ -6,18 +6,15 @@ import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 
     @ApiProperty()
-    @IsNotEmpty()
     @IsEmail()
     email: string;
 
     @ApiProperty()
     @IsString()
-    @IsNotEmpty()
     firstname: string;
 
     @ApiProperty()
     @IsString()
-    @IsNotEmpty()
     lastname: string;
 
     @ApiProperty()
