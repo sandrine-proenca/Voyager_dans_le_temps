@@ -79,17 +79,17 @@ export class UsersController
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiOperation({ summary: `Retrieving a user by id` }) @ApiResponse({ status: 200, description: 'Search for a user by id is found.' })
-  @Get(':id')
-  async findOneUser(@Param('id') id: number)
+  @Get('/account')
+  async findOneUser(@GetUser() user)
   {
-    const oneUser = await this.usersService.findOne(id);
+    const oneUser = await this.usersService.findOne(user.userId);
     if (!oneUser)
     {
       throw new BadRequestException(`User not found`);
     }
     return {
       statusCode: 200,
-      message: `Successful user ${id} recovery !`,
+      message: `Successful user ${user.userId} recovery !`,
       data: oneUser
     }
   }
@@ -123,20 +123,19 @@ export class UsersController
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiOperation({ summary: ` Deleting a user account by his id ` })
   @ApiResponse({ status: 200, description: `Account has been deleted` })
-  @Delete(':id')
-  async removeUser(@Param('id') id: number)
+  @Delete()
+  async removeUser(@GetUser() user)
   {
-    const userExist = await this.findOneUser(id);
-    if (!userExist)
-    {
-      throw new NotFoundException(`Album with id ${id} not found.`);
-    }
-    const deleteUser = await this.usersService.remove(id);
+    const deleteUser: number = user.userId;
+    const data = await this.usersService.findOne(deleteUser);
+    if (!data) 
+    throw new NotFoundException(`Your account has already been deleted.`);
+    const removeUser = await this.usersService.remove(user.userId);
 
     return {
       statusCode: 200,
       message: `The deletion of the user is saved`,
-      data: deleteUser
+      data: removeUser
     }
   }
 }

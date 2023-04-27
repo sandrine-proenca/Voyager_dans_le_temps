@@ -66,15 +66,16 @@ export class UsersService
   /*  Retrieving a user in the database by his id */
   async findOne(id: number)
   {
-    try
-    {
-      return await User.findOneBy({ id })
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
+    const user = await User.findOne({
+      relations: { albums: true },
+      where: { id: id },
+    });
+
+    if (user) {
+      return user;
     }
 
+    return undefined;
   }
 
 
@@ -138,11 +139,15 @@ export class UsersService
   }
 
   /* Delete a user in the database by his id */
-  async remove(id: number)
+  async remove(id: number): Promise<User | undefined>
   {
-      const user = await this.findOne(id);
+      const deleteUser = await User.findOne({
+        relations: { photos: true, albums: true },
+        where: { id: id },
+      });
 
-        return await user.remove();
+        User.remove(deleteUser);
+        return deleteUser;
   }
       
 }
