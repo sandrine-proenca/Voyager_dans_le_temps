@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, HttpStatus, BadRequestException, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, HttpStatus, BadRequestException, Request, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -80,7 +80,7 @@ export class UsersController
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiOperation({ summary: `Retrieving a user by id` }) @ApiResponse({ status: 200, description: 'Search for a user by id is found.' })
   @Get(':id')
-  async findOne(@Param('id') id: number)
+  async findOneUser(@Param('id') id: number)
   {
     const oneUser = await this.usersService.findOne(id);
     if (!oneUser)
@@ -98,16 +98,16 @@ export class UsersController
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiBody({ type: UpdateUserDto })
-  @ApiOperation({ summary: `Editing a user by his id` }) @ApiResponse({ status: 200, description: 'Your user has been modified' })
+  @ApiOperation({ summary: `Editing a user by his id` }) 
+  @ApiResponse({ status: 200, description: 'Your user has been modified' })
   @Patch()
   async update(@Body() updateUserDto: UpdateUserDto, @GetUser() user)
-  {
+  {    
     const updatedUser = await this.usersService.update(user.userId, updateUserDto);
-console.log(updatedUser);
 
     if (!updatedUser)
     {
-      throw new HttpException('Erreur Server', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new NotFoundException('No user found');
     }
 
     return {
@@ -118,37 +118,20 @@ console.log(updatedUser);
   }
 
 
-  /* @UseGuards(JwtAuthGuard) // verifie que le token est valide
-  @ApiOperation({ summary: `Editing a user` })
-  @Patch()
-  async updateUser(@Body() updateUserDto: UpdateUserDto, @Request() req)
-  {
-
-    const account = req.user.id
-    const updateAccount = await this.usersService.update(account, updateUserDto)
-
-    if (!updateAccount)
-    {
-      throw new HttpException(`Erreur Server`, HttpStatus.INTERNAL_SERVER_ERROR)
-    }
-
-    return {
-      statusCode: 200,
-      message: `Saved user changes`,
-      data: updateAccount
-    }
-  } */
-
-
   /** Deleting a user by its id for the admin or family's admin. */
   @UseGuards(JwtAuthGuard) // verifie que le token est valide
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiOperation({ summary: ` Deleting a user account by his id ` })
   @ApiResponse({ status: 200, description: `Account has been deleted` })
   @Delete(':id')
-  async removeUser(@Param('id') id: string)
+  async removeUser(@Param('id') id: number)
   {
-    const deleteUser = await this.usersService.remove(+id);
+    const userExist = await this.findOneUser(id);
+    if (!userExist)
+    {
+      throw new NotFoundException(`Album with id ${id} not found.`);
+    }
+    const deleteUser = await this.usersService.remove(id);
 
     return {
       statusCode: 200,

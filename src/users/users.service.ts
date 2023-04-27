@@ -82,47 +82,67 @@ export class UsersService
   async update(id: number, updateUserDto: UpdateUserDto)
   {
     const updateUser = await User.findOneBy({ id });
-console.log(id);
 
     if (!updateUser) throw new NotFoundException();
 
-      updateUser.email = updateUserDto.email,
-      updateUser.firstname = updateUserDto.firstname,
-      updateUser.lastname = updateUserDto.lastname,
-      updateUser.birthday = updateUserDto.birthday,
-      updateUser.phone = updateUserDto.phone,
-      updateUser.address = updateUserDto.address,
-      updateUser.job = updateUserDto.job,
-      updateUser.father = updateUserDto.father,
-      updateUser.mother = updateUserDto.mother,
-      updateUser.myself = updateUserDto.myself,
-      updateUser.travel = updateUserDto.travel,
-      updateUser.anecdote = updateUserDto.anecdote;
-    try
-    {
-      return await User.save(updateUser);
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    if (updateUserDto.email     !== undefined) {
+      updateUser.email     = updateUserDto.email     
+    };
+
+    if (updateUserDto.firstname !== undefined) {
+      updateUser.firstname = updateUserDto.firstname 
+    };
+
+    if (updateUserDto.lastname  !== undefined) {
+      updateUser.lastname  = updateUserDto.lastname  
+    };
+
+    if (updateUserDto.birthday  !== undefined) {
+      updateUser.birthday  = updateUserDto.birthday  
+    };
+
+    if (updateUserDto.phone     !== undefined) {
+      updateUser.phone     = updateUserDto.phone     
+    };
+
+    if (updateUserDto.address   !== undefined) {
+      updateUser.address   = updateUserDto.address   
+    };
+
+    if (updateUserDto.job       !== undefined) {
+      updateUser.job       = updateUserDto.job       
+    };
+
+    if (updateUserDto.father    !== undefined) {
+      updateUser.father    = updateUserDto.father    
+    };
+
+    if (updateUserDto.mother    !== undefined) {
+      updateUser.mother    = updateUserDto.mother    
+    };
+
+    if (updateUserDto.myself    !== undefined) {
+      updateUser.myself    = updateUserDto.myself    
+    };
+
+    if (updateUserDto.travel    !== undefined) {
+      updateUser.travel    = updateUserDto.travel    
+    };
+
+    if (updateUserDto.anecdote  !== undefined) {
+      updateUser.anecdote  = updateUserDto.anecdote  
+    };
+
+
+    return await updateUser.save();
   }
 
   /* Delete a user in the database by his id */
   async remove(id: number)
   {
-    try
-    {
       const user = await this.findOne(id);
-      if (user)
-      {
+
         return await user.remove();
-      }
-      return null;
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
   }
+      
 }
