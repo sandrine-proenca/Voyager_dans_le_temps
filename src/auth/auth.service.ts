@@ -29,7 +29,7 @@ export class AuthService {
 
     async login (user: any) {
 
-        const targetUser = await this.usersService.findUserByEmail(user.email)
+        const targetUser = await this.usersService.findByEmailWithAlbums(user.email)
         const payload = { email: targetUser.email, sub: targetUser.id}
 
         return {

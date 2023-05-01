@@ -8,98 +8,76 @@ import { User } from 'src/users/entities/user.entity';
 export class AlbumsService
 {
   /* Create an album in the database */
-  async create(createAlbumDto: CreateAlbumDto, user: User)
+  async create(createAlbumDto: CreateAlbumDto, user: User): Promise<Album | undefined>
   {
-    try
-    {
-      /* console.log(`---createAlbumDto service--->`, createAlbumDto); */
 
-      const newAlbum = await Album.create({ ...createAlbumDto });
-      /* console.log(`newAlbum 1 service--->`, newAlbum); */
+    const newAlbum = new Album();
+    newAlbum.name = createAlbumDto.name;
+    newAlbum.users = [ user ];
 
-      delete user.password;
-      newAlbum.users = [ user ];
-      /* console.log(`newAlbum 2 service--->`, newAlbum); */
+    await newAlbum.save();
 
-      return await newAlbum.save();
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException()
-    }
+    return newAlbum;
   }
+
+
 
   /* Retrieving all albums in the database */
   async findAll(): Promise<Album[]>
   {
-    try
-    {
-      return await Album.find();
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    return await Album.find({ relations: { photos: true } });
+
   }
+
+
 
   /*  Retrieving an album in the database by his id */
   async findAlbumById(id: number)
   {
-    try
-    {
-      return await Album.findOne({ relations: { users: true }, where: { id } })
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    return await Album.findOne({ relations: { users: true }, where: { id } })
   }
 
-  async update(id: number, updateAlbumDto: UpdateAlbumDto)
+
+
+  /*Retrieving an album in the database by his name*/
+  async findOneByName(name: string): Promise<Album[] | undefined>
   {
-    try
+    const oneNom = await Album.find({
+      where: { name: name },
+      relations: { users: true },
+    });
+    if (oneNom)
     {
+      return oneNom;
+    }
+    return undefined;
+  }
+
+
+  /* Change the name of the album in the database by the user. */
+  async update(id: number, updateAlbumDto: UpdateAlbumDto, user: User)
+  {
     //Find the album by its id.
     const updatedAlbum = await Album.findOneBy({ id });
-    if (!updatedAlbum) 
-    { 
-      throw new NotFoundException() 
-    };
-    
-    updatedAlbum.name = updateAlbumDto.name;
-    updatedAlbum.users = updateAlbumDto.users;
-    
-      return await Album.save(updatedAlbum);
-    }
-    catch (error)
+
+    if (!updatedAlbum) throw new NotFoundException();
+
+    if (updateAlbumDto.name !== undefined)
     {
-      throw new InternalServerErrorException();
+      updatedAlbum.name = updateAlbumDto.name
+
     }
+    return await updatedAlbum.save();
   }
 
+
+  /* Delete the album from the database by the user. */
   async remove(id: number)
   {
-    try
-    {
-      const album = await Album.findOneBy({ id });
-      if (album)
-      {
-        return await album.remove();
-      }
-      return null;
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    const album = await Album.findOneBy({ id });
+
+    return await album.remove();
+
   }
 
-  /** 
-* @method findAlbumAndUser:
-* * A method for returning data from a user relationship and an album.
-*/
-  async findAlbumAndUser(userId: number, name: string)
-  {
-    return await Album.findOne({ where: { users: { id: userId }, name: name } });
-  }
 }

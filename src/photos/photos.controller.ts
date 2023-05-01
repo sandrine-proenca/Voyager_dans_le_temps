@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
@@ -15,7 +15,6 @@ import { extname } from 'path';
 
 
 @ApiTags('PHOTOS') // Create a PHOTOS category in swagger UI.
-@UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
 @Controller('photos')
 export class PhotosController
 {
@@ -55,22 +54,44 @@ export class PhotosController
   }
 
 
+
+
+
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Get()
 async findAllPhotos(){
   const photos = await this.photosService.findAll();
-  return photos;
+  if (!photos)
+  {
+    throw new NotFoundException(`Albums not found.`);
+  }
+  return {
+    statusCode: 200,
+    message: `List of all albums.`,
+    data: photos
+  };
 }
+
+
 
 
 
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Get(':id')
-  async findOnePhoto(@Param('id') id: string)
+  async findOnePhoto(@Param('id') id: number)
   {
-    return this.photosService.findOne(+id);
+    const onePhoto = await this.photosService.findOne(id);
+    if (!onePhoto)
+    {
+      throw new NotFoundException(`Photo whith id ${id} not found.`);
+    }
+    return {
+      statusCode: 200,
+      message: `Photo with id ${id} is found.`,
+      data: onePhoto
+    }
   }
 
 
@@ -124,7 +145,7 @@ async findAllPhotos(){
 
     return {
       statusCode: 200,
-      message: `Deletion success.`,
+      message: `Deleted photo.`,
       data: deletedPhoto
     };
   }

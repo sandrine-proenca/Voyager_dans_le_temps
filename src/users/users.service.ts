@@ -21,24 +21,24 @@ export class UsersService
   /* Create a user in the database */
   async create(createUserDto: CreateUserDto, hash: string): Promise<User>
   {
-      const newUser = new User();
+    const newUser = new User();
 
-      newUser.email = createUserDto.email;
-      newUser.password = hash;
-      newUser.firstname = createUserDto.firstname;
-      newUser.lastname = createUserDto.lastname;
-      newUser.birthday = createUserDto.birthday;
-      newUser.phone = createUserDto.phone;
-      newUser.address = createUserDto.address;
-      newUser.job = createUserDto.job;
-      newUser.father = createUserDto.father;
-      newUser.mother = createUserDto.mother;
-      newUser.myself = createUserDto.myself;
-      newUser.travel = createUserDto.travel;
-      newUser.anecdote = createUserDto.anecdote;
+    newUser.email = createUserDto.email;
+    newUser.password = hash;
+    newUser.firstname = createUserDto.firstname;
+    newUser.lastname = createUserDto.lastname;
+    newUser.birthday = createUserDto.birthday;
+    newUser.phone = createUserDto.phone;
+    newUser.address = createUserDto.address;
+    newUser.job = createUserDto.job;
+    newUser.father = createUserDto.father;
+    newUser.mother = createUserDto.mother;
+    newUser.myself = createUserDto.myself;
+    newUser.travel = createUserDto.travel;
+    newUser.anecdote = createUserDto.anecdote;
 
-      await newUser.save();
-      return newUser;
+    await newUser.save();
+    return newUser;
   };
 
 
@@ -46,6 +46,12 @@ export class UsersService
   async findUserByEmail(email: string)
   {
     return await User.findOneBy({ email })
+  };
+
+  /* Retrieving a user in the database by his email and albums */
+  async findByEmailWithAlbums(email: string)
+  {
+    return await User.findOne({ where: { email }, relations: {albums: true} })
   };
 
 
@@ -71,7 +77,8 @@ export class UsersService
       where: { id: id },
     });
 
-    if (user) {
+    if (user)
+    {
       return user;
     }
 
@@ -86,52 +93,64 @@ export class UsersService
 
     if (!updateUser) throw new NotFoundException();
 
-    if (updateUserDto.email     !== undefined) {
-      updateUser.email     = updateUserDto.email     
+    if (updateUserDto.email !== undefined)
+    {
+      updateUser.email = updateUserDto.email
     };
 
-    if (updateUserDto.firstname !== undefined) {
-      updateUser.firstname = updateUserDto.firstname 
+    if (updateUserDto.firstname !== undefined)
+    {
+      updateUser.firstname = updateUserDto.firstname
     };
 
-    if (updateUserDto.lastname  !== undefined) {
-      updateUser.lastname  = updateUserDto.lastname  
+    if (updateUserDto.lastname !== undefined)
+    {
+      updateUser.lastname = updateUserDto.lastname
     };
 
-    if (updateUserDto.birthday  !== undefined) {
-      updateUser.birthday  = updateUserDto.birthday  
+    if (updateUserDto.birthday !== undefined)
+    {
+      updateUser.birthday = updateUserDto.birthday
     };
 
-    if (updateUserDto.phone     !== undefined) {
-      updateUser.phone     = updateUserDto.phone     
+    if (updateUserDto.phone !== undefined)
+    {
+      updateUser.phone = updateUserDto.phone
     };
 
-    if (updateUserDto.address   !== undefined) {
-      updateUser.address   = updateUserDto.address   
+    if (updateUserDto.address !== undefined)
+    {
+      updateUser.address = updateUserDto.address
     };
 
-    if (updateUserDto.job       !== undefined) {
-      updateUser.job       = updateUserDto.job       
+    if (updateUserDto.job !== undefined)
+    {
+      updateUser.job = updateUserDto.job
     };
 
-    if (updateUserDto.father    !== undefined) {
-      updateUser.father    = updateUserDto.father    
+    if (updateUserDto.father !== undefined)
+    {
+      updateUser.father = updateUserDto.father
     };
 
-    if (updateUserDto.mother    !== undefined) {
-      updateUser.mother    = updateUserDto.mother    
+    if (updateUserDto.mother !== undefined)
+    {
+      updateUser.mother = updateUserDto.mother
     };
 
-    if (updateUserDto.myself    !== undefined) {
-      updateUser.myself    = updateUserDto.myself    
+    if (updateUserDto.myself !== undefined)
+    {
+      updateUser.myself = updateUserDto.myself
     };
 
-    if (updateUserDto.travel    !== undefined) {
-      updateUser.travel    = updateUserDto.travel    
+    if (updateUserDto.travel !== undefined)
+    {
+      updateUser.travel = updateUserDto.travel
     };
 
-    if (updateUserDto.anecdote  !== undefined) {
-      updateUser.anecdote  = updateUserDto.anecdote  
+    if (updateUserDto.anecdote !== undefined)
+    {
+      updateUser.anecdote = updateUserDto.anecdote
     };
 
 
@@ -141,13 +160,13 @@ export class UsersService
   /* Delete a user in the database by his id */
   async remove(id: number): Promise<User | undefined>
   {
-      const deleteUser = await User.findOne({
-        relations: { photos: true, albums: true },
-        where: { id: id },
-      });
+    const deleteUser = await User.findOne({
+      relations: { photos: true, albums: true },
+      where: { id: id },
+    });
 
-        User.remove(deleteUser);
-        return deleteUser;
+    User.remove(deleteUser);
+    return deleteUser;
   }
-      
+
 }

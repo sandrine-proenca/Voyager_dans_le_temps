@@ -6,6 +6,7 @@ import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GetUser } from 'src/auth/get-user.decorator';
 
 /** Création d'un nouvel album nécessite :
  * * 
@@ -19,25 +20,28 @@ export class AlbumsController
     private readonly userService: UsersService) { }
 
 
+
+  /**
+   * Create an album in the database.
+   */
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiBody({ type: CreateAlbumDto })
   @ApiOperation({ summary: `Add a commentary to one photo.` })
   @ApiResponse({ status: 201, description: `Comment posted` })
   @Post()
-  async create(@Body() createAlbumDto: CreateAlbumDto, @Request() req)
+  async create(@Body() createAlbumDto: CreateAlbumDto, @GetUser() user)
   {
-    /* console.log('testcreateAlbumDto :',createAlbumDto); */
-    const albumExist = await this.albumsService.findAlbumAndUser(req.user.id, createAlbumDto.name);
-    /* console.log(albumExist); */
+    const userLog = await this.userService.findOne(user.userId);
 
-    if (albumExist)
-    {
+
+    const albumExist = await this.albumsService.findOneByName(createAlbumDto.name);
+
+
+    if (!albumExist)
       throw new HttpException(`This album already exist.`, HttpStatus.BAD_REQUEST);
-    }
-    const newAlbum = await this.albumsService.create(createAlbumDto, req.user);
-    /* console.log(`---newAlbum controller--->`, newAlbum); */
 
+    const newAlbum = await this.albumsService.create(createAlbumDto, userLog);
 
     return {
       statusCode: 201,
@@ -46,6 +50,11 @@ export class AlbumsController
     };
   };
 
+
+
+  /**
+   * Retrieving all albums in the database.
+   */
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Get()
@@ -63,6 +72,11 @@ export class AlbumsController
     };
   }
 
+
+
+  /**
+   * Retrieving an album in the database by his id.
+   */
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Get(':id')
@@ -80,34 +94,54 @@ export class AlbumsController
     };
   }
 
+
+  /**
+   * Change the name of the album in the database by the user.
+   */
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Patch(':id')
-  async update(@Param('id') id: number, @Body() updateAlbumDto: UpdateAlbumDto)
+  async update(@Param('id') id: number, @Body() updateAlbumDto: UpdateAlbumDto, @GetUser() user)
   {
-    const albumExist = await this.findOne(id);
+    const userLog = await this.userService.findOne(user.userId);
+
+    const albumExist = await this.userService.findOne(user.userId)
+
     if (!albumExist)
-    {
       throw new NotFoundException(`Album with id ${id} not found.`);
-    }
-    const updateAlbum = await this.albumsService.update(+id, updateAlbumDto);
-    return updateAlbum;
+
+    const albumUpdated = await this.albumsService.update(id, updateAlbumDto, userLog);
+
+    if (!albumUpdated)
+      throw new NotFoundException('No user found');
+
+
+    return {
+      statusCode: 200,
+      message: `Success of change.`,
+      data: albumUpdated
+    };
   }
 
+
+  /**
+   * Delete the album from the database by the user.
+   */
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @Delete(':id')
   async remove(@Param('id') id: number)
   {
     const albumExist = await this.findOne(id);
+
     if (!albumExist)
-    {
       throw new NotFoundException(`Album with id ${id} not found.`);
-    }
-    const deletedAlbum = await this.albumsService.remove(+id);
+
+    const deletedAlbum = await this.albumsService.remove(id);
+
     return {
       statusCode: 200,
-      message: `deleted album`,
+      message: `Deleted album.`,
       data: deletedAlbum
     }
   }

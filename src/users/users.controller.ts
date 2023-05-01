@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, HttpStatus, BadRequestException, Request, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, UseInterceptors, ClassSerializerInterceptor, HttpException, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -127,9 +127,12 @@ export class UsersController
   async removeUser(@GetUser() user)
   {
     const deleteUser: number = user.userId;
+
     const data = await this.usersService.findOne(deleteUser);
+
     if (!data) 
     throw new NotFoundException(`Your account has already been deleted.`);
+    
     const removeUser = await this.usersService.remove(user.userId);
 
     return {

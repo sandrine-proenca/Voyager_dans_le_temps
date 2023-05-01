@@ -9,114 +9,72 @@ export class PhotosService
 {
   async create(file: Express.Multer.File): Promise<Photo | undefined>
   {
-    try
-    {
-      const newPhoto = new Photo();
+    const newPhoto = new Photo();
 
-      newPhoto.photo = file.filename;
-      newPhoto.information = file.originalname;
-      newPhoto.mimeType = file.mimetype;
+    newPhoto.photo = file.filename;
+    newPhoto.information = file.originalname;
+    newPhoto.mimeType = file.mimetype;
 
-      const photo = await newPhoto.save();
-      return photo;
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    const photo = await newPhoto.save();
+    return photo;
   }
 
   async findAll()
   {
-    try
-    {
-      return await Photo.find();
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    return await Photo.find();
   }
 
   async findOne(id: number)
   {
-    try
-    {
-      const photoExist = await Photo.findOneBy({ id });
-      /* console.log(photoExist); */
-      return photoExist
-
-    }
-    catch (error)
-    {
-      throw new InternalServerErrorException();
-    }
+    const photoExist = await Photo.findOneBy({ id });
+    /* console.log(photoExist); */
+    return photoExist
   }
 
   async update(id: number, updatePhotoDto: UpdatePhotoDto, file: Express.Multer.File)
   {
-    try
+    const updatedPhoto = await Photo.findOneBy({ id });
+    if (updatedPhoto)
     {
-      const updatedPhoto = await Photo.findOneBy({ id });
-      if (updatedPhoto)
+      //Delete the photo file in 'uploads'.
+      const path = `${process.cwd()}/uploads/${updatedPhoto.photo}`;
+      fs.unlink(path, (err) =>
       {
-        //Delete the photo file in 'uploads'.
-        const path = `${process.cwd()}/uploads/${updatedPhoto.photo}`;
-        fs.unlink(path, (err) =>
+        if (err)
         {
-          if (err)
-          {
-            return console.log(err);
-          }
-          console.log('file deleted successfully');
-        })
+          return console.log(err);
+        }
+        console.log('file deleted successfully');
+      })
 
-        updatedPhoto.photo = file.filename;
-        updatedPhoto.information = file.originalname;
-        updatedPhoto.mimeType = file.mimetype;
+      updatedPhoto.photo = file.filename;
+      updatedPhoto.information = file.originalname;
+      updatedPhoto.mimeType = file.mimetype;
 
-
-        const photo = await updatedPhoto.save();
-        return photo;
-      }
-      return null;
+      const photo = await updatedPhoto.save();
+      return photo;
     }
-    catch (error)
-    {
-      console.log(error);
-
-      throw new InternalServerErrorException();
-    }
-
+    return null;
   }
-  
+
 
   async remove(id: number)
   {
-    try
+    const photo = await this.findOne(id);
+    if (photo)
     {
-      const photo = await this.findOne(id);
-      if (photo)
+      //Delete the photo file in 'uploads'.
+      const path = `${process.cwd()}/uploads/${photo.photo}`;
+      fs.unlink(path, (err) =>
       {
-        //Delete the photo file in 'uploads'.
-        const path = `${process.cwd()}/uploads/${photo.photo}`;
-        fs.unlink(path, (err) =>
+        if (err)
         {
-          if (err)
-          {
-            return console.log(err);
-          }
-          console.log('file deleted successfully');
-        })
-        return await photo.remove();
-      }
-      return null;
+          return console.log(err);
+        }
+        console.log('file deleted successfully');
+      })
+      return await photo.remove();
     }
-    catch (error)
-    {
-      console.log(error);
-
-      throw new InternalServerErrorException();
-    }
+    return null;
   }
 }
