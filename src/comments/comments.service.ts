@@ -3,7 +3,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Commentary } from './entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Photo } from 'src/photos/entities/photo.entity';
+import Photo from 'src/photos/entities/photo.entity';
 
 @Injectable()
 export class CommentsService

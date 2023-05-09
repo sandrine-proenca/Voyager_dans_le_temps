@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Photo } from "src/photos/entities/photo.entity";
+import Photo from "src/photos/entities/photo.entity";
 import { User } from "src/users/entities/user.entity";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 

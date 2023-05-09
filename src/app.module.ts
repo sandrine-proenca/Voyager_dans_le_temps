@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { AlbumsModule } from './albums/albums.module';
 import { Album } from './albums/entities/album.entity';
 import { PhotosModule } from './photos/photos.module';
-import { Photo } from './photos/entities/photo.entity';
+import Photo from './photos/entities/photo.entity';
 
 @Module({
   imports: [

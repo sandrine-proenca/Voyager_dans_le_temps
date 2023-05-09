@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import { Photo } from "src/photos/entities/photo.entity";
+import Photo from "src/photos/entities/photo.entity";
 
 export const GetPhoto = createParamDecorator((_data, ctx:ExecutionContext): Photo =>
 {

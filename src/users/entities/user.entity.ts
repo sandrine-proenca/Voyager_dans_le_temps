@@ -4,8 +4,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { UserRoleEnum } from "src/auth/user-role.enum/user-role.enum";
 import { Album } from "src/albums/entities/album.entity";
-import { Photo } from "src/photos/entities/photo.entity";
 import { Length } from "class-validator";
+import Photo from "src/photos/entities/photo.entity";
 
 /*User's table */
 @Entity('users')

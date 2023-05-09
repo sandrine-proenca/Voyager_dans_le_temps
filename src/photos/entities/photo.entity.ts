@@ -1,12 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Length } from "class-validator";
 import { Album } from "src/albums/entities/album.entity";
 import { Commentary } from "src/comments/entities/comment.entity";
 import { User } from "src/users/entities/user.entity";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('photos')
-export class Photo extends BaseEntity {
+@Entity()
+export default class Photo extends BaseEntity {
 
     /* Photo's table */
     @ApiProperty()
@@ -14,17 +13,12 @@ export class Photo extends BaseEntity {
     id: number
 
     @ApiProperty()
-    @Column()
-    photo: string;
+    @Column( { nullable: true } )
+    originalName: string;
 
     @ApiProperty()
-    @Column()
-    @Length(1,7000)
-    information: string;
-
-    @ApiProperty()
-    @Column()
-    mimeType: string;
+    @Column( { nullable: true } )
+    file: string;
 
     
 

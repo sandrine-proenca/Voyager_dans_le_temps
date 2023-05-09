@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsObject, IsOptional, IsString, Length } from 'class-validator';
 import { CreateCommentDto } from './create-comment.dto';
-import { Photo } from 'src/photos/entities/photo.entity';
+import Photo from 'src/photos/entities/photo.entity';
 export class UpdateCommentDto extends PartialType(CreateCommentDto)
 {
     @ApiProperty()

@@ -3,7 +3,7 @@ import { IsInt, IsNotEmpty,  IsOptional,  IsString } from "class-validator";
 
 export class CreatePhotoDto {
 
-    @ApiProperty()
+    /* @ApiProperty()
     @IsNotEmpty()
     @IsString()
     photo: string;
@@ -16,15 +16,14 @@ export class CreatePhotoDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    mimeType: string;
+    mimeType: string; */
 
     @ApiProperty()
-    @IsOptional()
-    @IsInt()
+    @IsNotEmpty()
     albumId: number;
 
-    @ApiProperty()
+    /* @ApiProperty()
     @IsOptional()
     @IsInt()
-    userId: number;
+    userId: number; */
 }

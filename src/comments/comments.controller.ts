@@ -4,8 +4,6 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UsersService } from 'src/users/users.service';
-import { PhotosService } from 'src/photos/photos.service';
 import { GetUser } from 'src/auth/get-user.decorator';
 
 
