@@ -20,7 +20,7 @@ export class CreatePhotoDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    albumId: number;
+    albumId: string;
 
     /* @ApiProperty()
     @IsOptional()

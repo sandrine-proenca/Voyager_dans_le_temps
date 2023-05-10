@@ -4,7 +4,7 @@ import { Commentary } from "src/comments/entities/comment.entity";
 import { User } from "src/users/entities/user.entity";
 import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity('photos')
 export default class Photo extends BaseEntity {
 
     /* Photo's table */
@@ -31,7 +31,7 @@ export default class Photo extends BaseEntity {
     user: User
 
     @ApiProperty({ type: () => Album })
-    @ManyToOne( () => Album, (album) => album.photos, {eager: true})
+    @ManyToOne( () => Album, (album) => album.photos, {eager: false})
     album: Album;
 
     @ApiProperty({ type: () => Commentary })

@@ -21,9 +21,7 @@ export class AlbumsController
 
 
 
-  /**
-   * Create an album in the database.
-   */
+  /**Create an album in the database.*/
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiBody({ type: CreateAlbumDto })
@@ -34,9 +32,7 @@ export class AlbumsController
   {
     const userLog = await this.userService.findOne(user.userId);
 
-
     const albumExist = await this.albumsService.findOneByName(createAlbumDto.name);
-
 
     if (!albumExist)
       throw new HttpException(`This album already exist.`, HttpStatus.BAD_REQUEST);

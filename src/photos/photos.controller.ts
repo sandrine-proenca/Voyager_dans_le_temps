@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, NotFoundException, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor, UseGuards, UploadedFile, NotFoundException, Res, ParseIntPipe } from '@nestjs/common';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -35,9 +35,11 @@ export default class PhotosController
       destination: './uploads',
       filename: (req, file, callback) =>
       {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9); //Return a multer number specific to each photo.(Retourne un numéro multer propre à chaque photo.)
-        const ext = extname(file.originalname); //Extension of the original file.(Extension du fichier original.)
-        const filename = `${uniqueSuffix}${ext}`;
+        //const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9); //Return a multer number specific to each photo.(Retourne un numéro multer propre à chaque photo.)
+        //const ext = extname(file.originalname); //Extension of the original file.(Extension du fichier original.)
+        //const filename = `${uniqueSuffix}${ext}`;
+        const filename = file.originalname;
+        
         callback(null, filename);
       }
     }),
@@ -47,16 +49,17 @@ export default class PhotosController
   async uploadFile(
     @Body() createPhotoDto: CreatePhotoDto,
     @GetUser() user,
-    @UploadedFile() savedFiles: Array<Express.Multer.File>)
+    @UploadedFile() file: Express.Multer.File)
   {
-    console.log(savedFiles);
+    console.log(createPhotoDto);
+    
     const oneUser = await this.userService.findOne(user.userId);
-    const albumExist = await this.albumService.findAlbumById(createPhotoDto.albumId);
+    const albumExist = await this.albumService.findAlbumById(+createPhotoDto.albumId);
     if (!albumExist) throw new NotFoundException(`The photo album does not exist.`);
     const newPhoto = await this.photosService.create(
       oneUser,
-      savedFiles,
-      createPhotoDto
+      file,
+      +createPhotoDto.albumId
     )
     return {
       statusCode: 201,
@@ -69,34 +72,49 @@ export default class PhotosController
 
 
 
-  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
-  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
-  @Get(':imgpath')
-  async findAllPhotos (@Param('imgpath') file, @Res() res)
+  //@UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  //@UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  /* @Get(':imgpath')
+  async seeUploadFile (@Param('imgpath') file, @Res() res)
   {
     return res.sendFile(file, { root: '.uploads' });
+  } */
+
+
+
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  @Get()
+  async findAllPhotos(){
+    const allPhotos = await this.photosService.findAll();
+    if(!allPhotos) throw new NotFoundException(`No photos are saved.`);
+    return {
+      status: 200,
+      message: `Here are your pictures:`,
+      data: allPhotos
+    }
   }
 
 
 
 
 
-  //@UseGuards(JwtAuthGuard) // The user must be logged in / registered.
-  //@UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
-  /* @Get(':id')
-  async findOnePhoto(@Param('id') id: number)
+  @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
+  @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
+  @Get(':id')
+  async findOnePhoto(@Param('id', ParseIntPipe) id: number)
   {
     const onePhoto = await this.photosService.findOne(id);
-    if (!onePhoto)
+    /* if (!onePhoto)
     {
       throw new NotFoundException(`Photo whith id ${id} not found.`);
-    }
+    } */
     return {
       statusCode: 200,
       message: `Photo with id ${id} is found.`,
       data: onePhoto
     }
-  } */
+  }
 
 
 
@@ -127,9 +145,9 @@ export default class PhotosController
     {
       throw new NotFoundException(`Photo not found`);
     }
-    const albumExist = await this.albumService.findAlbumById(updatePhotoDto.albumId);
+    const albumExist = await this.albumService.findAlbumById(+updatePhotoDto.albumId);
 
-    const photoUpdated = await this.photosService.update(id, updatePhotoDto/* , file */);
+    const photoUpdated = await this.photosService.update(id, +updatePhotoDto.albumId/* , file */);
 
     return {
       statusCode: 200,

@@ -14,17 +14,13 @@ export class Album extends BaseEntity {
     @ApiProperty()
     @Column({ length:50, unique: true })
     name: string
-
-
     
     /* Relations with other tables */
-
     @ApiProperty({ type: () => Photo })
-    @OneToMany( () => Photo, (photo) => photo.album)
+    @OneToMany( () => Photo, (photo) => photo.album, {eager: true})
     photos: Photo[]
 
     @ApiProperty( { type: () => [User]})
     @ManyToMany( () => User, (user) => user.albums, {eager: true})
     users: User[];
-
 }

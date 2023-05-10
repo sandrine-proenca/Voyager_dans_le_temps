@@ -14,21 +14,19 @@ export default class PhotosService
 
   async create(
     user: User,
-    files: Array<Express.Multer.File>,
-    createPhotoDto: CreatePhotoDto
+    file: Express.Multer.File,
+    albumId: number
     ): Promise<Photo | undefined>
   {
-    const album = await Album.findOneBy({ id:createPhotoDto.albumId});
+    const album = await Album.findOneBy({ id:albumId});
 
     const newPhoto = new Photo();
 
-    files.map( (file) =>{
     newPhoto.user = user;
     newPhoto.file = file.filename;
     newPhoto.originalName = file.originalname;
     newPhoto.album = album;
     Photo.save(newPhoto);
-    })
     return newPhoto;
   }
 
@@ -41,10 +39,10 @@ export default class PhotosService
 
 
 
-  async findOne(id: number): Promise<Photo | undefined>
+  async findOne(id: number): Promise<Photo[] | undefined>
   {
     const photoExist = await Photo.find( { where: { id: id } } );
-    return photoExist[0];
+    return photoExist;
   }
 
 
@@ -58,11 +56,11 @@ export default class PhotosService
 
   async update(
     id: number, 
-    updatePhotoDto: UpdatePhotoDto, 
+    albumId: number, 
     /* file: Express.Multer.File */
     ): Promise<Photo | undefined>
   {
-    const albumId = await Album.findOneBy({ id: updatePhotoDto.albumId })
+    //const album = await Album.findOneBy({ id: albumId })
     const updatedPhoto = await Photo.findOneBy({ id: id });
     /* updatedPhoto?.album.push(albumId); */
     const photoUpdated = updatedPhoto.save();
