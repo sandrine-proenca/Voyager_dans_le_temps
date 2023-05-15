@@ -35,10 +35,10 @@ export default class PhotosController
       destination: './uploads',
       filename: (req, file, callback) =>
       {
-        //const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9); //Return a multer number specific to each photo.(Retourne un numéro multer propre à chaque photo.)
-        //const ext = extname(file.originalname); //Extension of the original file.(Extension du fichier original.)
-        //const filename = `${uniqueSuffix}${ext}`;
-        const filename = file.originalname;
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9); //Return a multer number specific to each photo.(Retourne un numéro multer propre à chaque photo.)
+        const ext = extname(file.originalname); //Extension of the original file.(Extension du fichier original.)
+        const filename = `${uniqueSuffix}${ext}`;
+        //const filename = file.originalname;
         
         callback(null, filename);
       }
@@ -51,7 +51,6 @@ export default class PhotosController
     @GetUser() user,
     @UploadedFile() file: Express.Multer.File)
   {
-    console.log(createPhotoDto);
     
     const oneUser = await this.userService.findOne(user.userId);
     const albumExist = await this.albumService.findAlbumById(+createPhotoDto.albumId);

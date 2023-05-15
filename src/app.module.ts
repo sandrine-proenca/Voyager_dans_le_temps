@@ -12,9 +12,14 @@ import { AlbumsModule } from './albums/albums.module';
 import { Album } from './albums/entities/album.entity';
 import { PhotosModule } from './photos/photos.module';
 import Photo from './photos/entities/photo.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "postgres",

@@ -1,4 +1,4 @@
-import { Controller, Request, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, ClassSerializerInterceptor, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, ClassSerializerInterceptor, HttpStatus } from '@nestjs/common';
 import { HttpException, NotFoundException } from '@nestjs/common/exceptions';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
@@ -21,7 +21,9 @@ export class AlbumsController
 
 
 
-  /**Create an album in the database.*/
+  /**
+   * Create an album in the database.
+   */
   @UseGuards(JwtAuthGuard) // The user must be logged in / registered.
   @UseInterceptors(ClassSerializerInterceptor) // Does not return entity properties marked with @Exclude()
   @ApiBody({ type: CreateAlbumDto })

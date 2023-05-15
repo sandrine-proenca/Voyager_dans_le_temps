@@ -19,13 +19,8 @@ export default class Photo extends BaseEntity {
     @ApiProperty()
     @Column( { nullable: true } )
     file: string;
-
-    
-
-
     
     /* Relations with other tables */
-
     @ApiProperty({ type: ()=> User})
     @ManyToOne( ()=> User, (user) => user.photos, {eager: true})
     user: User
