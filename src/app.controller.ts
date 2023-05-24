@@ -9,7 +9,7 @@ export class AppController
 
   constructor(private readonly authService: AuthService) { }
 
-  @ApiTags(`Sign In`)
+  @ApiTags(`LOGIN`)
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req: any)
