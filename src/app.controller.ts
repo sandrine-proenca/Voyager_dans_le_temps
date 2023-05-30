@@ -17,7 +17,7 @@ export class AppController
     return this.authService.login(req.user);
   }
 
-  @ApiTags(`User Profile`)
+  @ApiTags(`USER PROFILE`)
   @UseGuards(JwtAuthGuard)
   @Get(`userprofile`)
   getProfile(@Request() req)
